@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<style>
+.radar-band{background:var(--wine);padding:40px 48px;}
+.radar-inner{max-width:1240px;margin:0 auto;}
+.radar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px;}
+.radar-word{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 12px;text-align:center;cursor:pointer;transition:all .2s;}
+.radar-word:hover{background:rgba(247,203,21,.15);border-color:var(--gold);}
+.rw-word{font-family:var(--fD);font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.rw-gen{font-size:10px;color:rgba(255,255,255,.5);margin-bottom:4px;}
+.rw-trend{font-size:12px;font-weight:700;}
+.rw-up{color:#4ade80;}.rw-down{color:#f87171;}
+.gen-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:28px 48px 0;max-width:1240px;margin:0 auto;}
+.gtab{font-family:var(--fD);font-size:13px;font-weight:700;background:var(--card-bg);border:1.5px solid var(--border);color:var(--wine);padding:9px 18px;border-radius:100px;cursor:pointer;transition:all .15s;}
+.gtab.on,.gtab:hover{background:var(--wine);color:#fff;border-color:var(--wine);}
+.plat-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:12px 48px 0;max-width:1240px;margin:0 auto;}
+.ptab{font-family:var(--fD);font-size:12px;font-weight:700;background:var(--card-bg);border:1.5px solid var(--border);color:var(--wine);padding:7px 14px;border-radius:100px;cursor:pointer;transition:all .15s;}
+.ptab.on,.ptab:hover{background:var(--magenta);color:#fff;border-color:var(--magenta);}
+.trend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:28px 48px 64px;max-width:1240px;margin:0 auto;}
+.tcard{border-radius:20px;overflow:hidden;border:1.5px solid var(--border);background:var(--card-bg);transition:transform .2s,box-shadow .2s;}
+.tcard:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(100,0,49,.1);}
+.tcard-vis{height:180px;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative;}
+.tc-badge{position:absolute;top:12px;right:12px;font-family:var(--fD);font-size:10px;font-weight:700;padding:4px 10px;border-radius:100px;text-transform:uppercase;letter-spacing:.5px;}
+.tc-viral{background:#fef2f2;color:#dc2626;}
+.tc-trending{background:#f0fdf4;color:#16a34a;}
+.tc-past{background:#f5f5f4;color:#78716c;}
+.tc-gen-badge{position:absolute;top:12px;left:12px;font-family:var(--fD);font-size:9px;font-weight:700;padding:3px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.5px;background:rgba(0,0,0,.5);color:#fff;}
+.tcard-body{padding:20px;}
+.tc-platform{font-size:10.5px;font-weight:700;color:var(--steel);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.tc-title{font-family:var(--fD);font-size:15px;font-weight:700;color:var(--wine);margin-bottom:8px;line-height:1.3;}
+.tc-desc{font-size:13px;color:var(--text-soft);line-height:1.6;margin-bottom:12px;}
+.tc-more-btn{font-family:var(--fD);font-size:12px;font-weight:700;color:var(--magenta);background:none;border:none;cursor:pointer;padding:0;}
+.tc-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.tc-detail.open{display:block;}
+.tc-detail-row{font-size:12.5px;color:var(--text-soft);line-height:1.7;margin-bottom:6px;}
+.tc-detail-row b{color:var(--wine);font-weight:700;}
+.no-results{grid-column:1/-1;text-align:center;padding:64px;color:var(--gray);}
+@media(max-width:900px){
+  .trend-grid{grid-template-columns:1fr;padding:20px;}.radar-grid{grid-template-columns:1fr 1fr;}
+  .gen-tabs,.plat-tabs{padding:16px 20px 0;}.radar-band{padding:32px 20px;}
+}
+</style>
+</head>
+<body>
+<div id="site-nav-placeholder"></div>
+<div class="page-hero">
+  <div class="page-hero-eyebrow">🔥 Actualizado julio 2026</div>
+  <h1 class="page-hero-title">Tendencias — Multi-generacional</h1>
+  <p class="page-hero-sub">Lo que está sonando en todas las generaciones: Gen Alpha, Gen Z, Millennials, Gen X y Boomers.</p>
+</div>
+
+<div class="radar-band">
+  <div class="radar-inner">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-family:var(--fD);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">📡 Radar en tiempo real — Julio 2026</div>
+        <div style="font-family:var(--fD);font-size:20px;font-weight:800;color:#fff;">Las más buscadas ahora</div>
+      </div>
+    </div>
+    <div class="radar-grid" id="radarGrid"></div>
+  </div>
+</div>
+
+<div class="gen-tabs" id="genTabs"></div>
+<div class="plat-tabs" id="platTabs"></div>
+<div class="trend-grid" id="trendGrid"></div>
+
+<div id="site-footer-placeholder"></div>
+<script src="js/app-core.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script>
+initPage({page:'tendencias.html',title:'Tendencias 2026',description:'Tendencias digitales multi-generacionales: Gen Alpha, Gen Z, Millennials, Gen X y Boomers.'});
+
+const GEN_FILTERS = [
+  {id:'all',label:'Todas las generaciones'},
+  {id:'alpha',label:'Gen Alpha (2013+)'},
+  {id:'genz',label:'Gen Z (1997-2012)'},
+  {id:'millennial',label:'Millennials (1981-1996)'},
+  {id:'genx',label:'Gen X (1965-1980)'},
+  {id:'boomer',label:'Boomers (1946-1964)'},
+];
+
+const PLATFORMS = ['all','tiktok','instagram','x','youtube','ia','videojuegos','twitch','whatsapp','trabajo'];
+const PLAT_LABELS = {all:'Todo',tiktok:'TikTok',instagram:'Instagram',x:'X',youtube:'YouTube',ia:'IA',videojuegos:'Videojuegos',twitch:'Twitch',whatsapp:'WhatsApp',trabajo:'Trabajo/Carrera'};
+
+const TRENDS = [
+  /* GEN ALPHA */
+  {gen:'alpha',platform:'tiktok',emoji:'✨',title:'Aura farming — acumula puntos de carisma',desc:'Filmar momentos cotidianos con una puntuación de "aura" ganada o perdida. +500 por llegar con café. -1000 por tropezarse.',status:'viral',origin:'TikTok, julio 2025-2026',famous:'Creadores Gen Alpha en TikTok',why:'Gamifica el carisma y el día a día — infinitamente replicable',full:'"Farmar aura" es lo más viral de 2025-2026 entre Gen Alpha. Convierte la vida cotidiana en un juego donde cada acción tiene puntos. El formato: narrar el día con puntajes. La comunidad decide cuánto "aura" merece cada cosa.'},
+  {gen:'alpha',platform:'youtube',emoji:'🚽',title:'Skibidi Toilet: el idioma de Gen Alpha',desc:'La serie absurda que definió el lenguaje de toda una generación.',status:'trending',origin:'Canal DaFuq!?Boom!, YouTube 2023',famous:'DaFuq!?Boom!',why:'El absurdo puro conecta con menores criados en internet sin filtros',full:'En 2026, Skibidi Toilet ya tiene más de 150 episodios y una película en producción. Gen Alpha la convirtió en su lenguaje base: "skibidi" es cualquier cosa random, "sigma" es alguien genial, "Ohio" es algo raro. Para los padres: un diccionario de Skibidi ayuda más que regañarlos.'},
+  {gen:'alpha',platform:'tiktok',emoji:'👾',title:'Minecraft Gen Alpha: la nostalgia nueva',desc:'Gen Alpha redescubrió Minecraft en 2025-2026 con mods de IA incluidos.',status:'viral',origin:'Mojang 2011, resurge 2025',famous:'Nueva generación de creadores Minecraft',why:'Es infinitamente creativo, no tiene fin y permite colaboración familiar',full:'Minecraft volvió a ser el juego más jugado del mundo en 2025. Gen Alpha lo adoptó como suyo, lo mezcló con mods de IA generativa y creó mundos imposibles. El resultado inesperado: abuelos y nietos jugando juntos por primera vez.'},
+
+  /* GEN Z */
+  {gen:'genz',platform:'tiktok instagram',emoji:'🤢',title:'The ick — la repulsión irreversible',desc:'Un momento específico elimina la atracción por alguien completamente.',status:'viral',origin:'Slang amoroso inglés, explosión latina 2025',famous:'Creadores de dating content',why:'Todo el mundo tiene su historia de "the ick" y quiere contarla',full:'"The ick" explotó en español en 2025 y sigue dominando en 2026. Los videos de "cosas que me dan el ick" acumulan millones. Los más virales: correr raro, hablar con el mozo por ti, escribir "k", usar canguro. La conversación generacional más honesta sobre relaciones.'},
+  {gen:'genz',platform:'tiktok',emoji:'📋',title:'Understood the assignment: elogio máximo',desc:'Cuando alguien llega exactamente como se esperaba, de manera impecable.',status:'trending',origin:'Slang inglés, masificado 2025-2026',famous:'Cultura de moda y lifestyle',why:'Aspiracional: todos quieren "entender el encargo"',full:'En 2026, "understood the assignment" aparece en contextos de moda, trabajo, amistades y política. Si alguien lo dice de ti, lo hiciste perfecto. También genera el contraformato: videos de "claramente NO understood the assignment".'},
+  {gen:'genz',platform:'x',emoji:'🏠',title:'Rent free: el concepto del año',desc:'Cuando algo vive en tu cabeza sin que puedas evitarlo.',status:'trending',origin:'Expresión inglesa, boom 2025-2026',famous:'Creadores de X y comentaristas',why:'Describe perfectamente la obsesión involuntaria de forma graciosa',full:'"Vive en mi cabeza rent free" se convirtió en la forma más usada para hablar de obsesiones. Canciones, personas, momentos, frases. En 2026 se usa también en política y deportes: "ese jugador vive rent free en la cabeza del técnico rival".'},
+  {gen:'genz',platform:'tiktok instagram',emoji:'⭐',title:'Era: vivir con identidad de fase',desc:'"Estoy en mi era de..." se convirtió en el formato de vida de Gen Z.',status:'trending',origin:'Eras de Taylor Swift, adoptado 2023',famous:'Taylor Swift, creadores lifestyle',why:'Convierte cualquier fase de vida en algo con identidad y propósito',full:'En 2026, "mi era" está en todas partes: "mi era saludable", "mi era de paz mental", "mi era delulu", "mi era villana". Es la forma Gen Z de hablar de sus procesos personales sin drama pero con mucha personalidad.'},
+
+  /* MILLENNIALS */
+  {gen:'millennial',platform:'trabajo',emoji:'💼',title:'Quiet quitting sigue siendo mainstream',desc:'Hacer exactamente lo del contrato y nada más. Sin horas extra, sin correos de noche.',status:'trending',origin:'TikTok 2022, vigente 2026',famous:'Joven Millennials y Gen Z laboral',why:'La respuesta colectiva a la hustle culture que quemó a una generación',full:'En 2026, el quiet quitting ya no es una tendencia — es política de trabajo para millones. Las empresas respondieron con "work-life integration". Millennials que vieron el burnout de cerca adoptaron el modelo: calidad de presencia vs horas acumuladas.'},
+  {gen:'millennial',platform:'instagram',emoji:'📸',title:'BeReal y la autenticidad digital',desc:'La app que solo deja publicar en el momento. Sin filtros, sin edición.',status:'past',origin:'BeReal, 2022',famous:'Millennials mayores y Gen Z',why:'Reacción al contenido perfectamente producido que generó insatisfacción',full:'BeReal fue el experimento social más interesante de los 2020s: capturaba frente y selfie simultáneamente sin aviso. Murió como app pero dejó su legado: los "photo dump" sin filtro de Instagram son su herencia directa.'},
+  {gen:'millennial',platform:'x trabajo',emoji:'🔥',title:'Burnout: el síndrome de la generación',desc:'El agotamiento crónico que la OMS reconoció y los Millennials nombraron.',status:'trending',origin:'OMS 2019, crisis 2022-2026',famous:'Millennial workers worldwide',why:'Una generación trabajó 80 horas semanales durante años y pagó el precio',full:'El burnout Millennial es la conversación de salud mental más importante de 2026. Las tasas de licencias por salud mental superan históricamente a cualquier otra causa. Las empresas están respondiendo con días de salud mental y semanas de 4 días.'},
+  {gen:'millennial',platform:'instagram youtube',emoji:'🎤',title:'FOMO vs JOMO: el cambio generacional',desc:'Millennials pasaron del miedo a perderse algo a la alegría de no ir.',status:'trending',origin:'FOMO ~2013, JOMO aparece 2023',famous:'Millennial content creators de 30+',why:'La madurez emocional generacional expresada como tendencia de vida',full:'"JOMO" (Joy Of Missing Out) es la respuesta Millennial de 30+ al FOMO de sus 20s. "Me quedé en casa con una peli y fue la mejor decisión" acumula millones de likes. Es la normalización de elegir el descanso sobre la actividad social por obligación.'},
+
+  /* GEN X / BOOMERS */
+  {gen:'genx boomer',platform:'whatsapp',emoji:'📰',title:'WhatsApp y la desinformación intergeneracional',desc:'El problema #1 de comunicación digital entre generaciones en 2026.',status:'viral',origin:'WhatsApp + redes sociales, crítico 2020-2026',famous:'Familiares de todas las edades',why:'Las cadenas de WhatsApp siguen siendo el vector principal de fake news',full:'En 2026, WhatsApp es el campo de batalla intergeneracional más activo. Padres y abuelos reciben cadenas falsas. Hijos y nietos aprenden a desmentirlas con paciencia. ALT 60/40 nació en parte para tender ese puente.'},
+  {gen:'genx boomer',platform:'ia',emoji:'🤖',title:'IA como asistente para adultos mayores',desc:'ChatGPT y asistentes de IA usados por Boomers y Gen X para navegar el mundo digital.',status:'trending',origin:'ChatGPT masificación 2023-2026',famous:'OpenAI / Anthropic',why:'La IA simplifica tareas digitales complejas para personas que adoptaron tecnología de adultos',full:'En 2026, muchos adultos de 60+ usan IA para escribir emails, entender facturas, traducir formularios o simplemente preguntar cosas que "no se atreverían a preguntar a un médico". Es la democratización digital más silenciosa e importante del año.'},
+  {gen:'genx boomer',platform:'youtube',emoji:'📺',title:'YouTube como nueva TV para Boomers',desc:'Los Boomers adoptaron YouTube como su fuente principal de entretenimiento e información.',status:'trending',origin:'YouTube 2005, adopción masiva Boomer 2020+',famous:'Canales educativos y de noticias',why:'No tiene publicidad intrusiva como la TV y el contenido es infinito y a demanda',full:'YouTube es la plataforma más usada por personas de 55+ en 2026. Tutoriales, documentales, noticias, cocina, jardinería. Lo que la TV dejó de dar lo da YouTube. Y el algoritmo aprende rápido: les muestra exactamente lo que buscan.'},
+
+  /* MULTI-GENERACIONAL / IA */
+  {gen:'all',platform:'ia',emoji:'🎨',title:'Arte IA estilo Ghibli sigue dominando',desc:'Convertir fotos en ilustraciones Ghibli con IA. Tendencia que comenzó en 2025 y sigue.',status:'trending',origin:'ChatGPT DALL-E, abril 2025',famous:'OpenAI / Studio Ghibli',why:'La estética Ghibli es amada por todas las generaciones',full:'Una de las pocas tendencias que une a todas las generaciones: abuelos convierten fotos de nietos, jóvenes transforman selfies, familias crean álbumes imaginarios. En 2026 hay variantes: estilo Pixar, anime, pintura al óleo. La herramienta más democrática de arte digital de la historia.'},
+  {gen:'all',platform:'ia',emoji:'🎭',title:'Deepfakes: el problema de 2026',desc:'Videos falsos generados por IA tan reales que ya nadie sabe qué creer.',status:'viral',origin:'Tecnología 2019, crisis 2025-2026',famous:'Múltiples actores malintencionados',why:'La IA bajó a todos el costo de crear contenido falso convincente',full:'En 2026, los deepfakes son la crisis de desinformación más importante. Hay deepfakes de políticos, de celebridades, de familiares. La pregunta intergeneracional que más une a todas las generaciones: "¿esto es real?" Detectar deepfakes es una habilidad crítica de alfabetización digital 2026.'},
+  {gen:'all',platform:'trabajo ia',emoji:'💼',title:'IA en el trabajo: la revolución silenciosa',desc:'Desde Boomers hasta Gen Z: la IA cambió cómo trabaja el mundo.',status:'viral',origin:'ChatGPT 2022, integración masiva 2025-2026',famous:'Microsoft / Google / Anthropic',why:'Es imposible no verse afectado: cambió todos los sectores y todas las edades',full:'En 2026, la IA está en Word, Gmail, Excel, WhatsApp Business. Boomers la usan para escribir emails. Millennials para automatizar tareas. Gen Z la usa como copiloto. La gran conversación intergeneracional del año: ¿la IA nos quitará el trabajo o nos liberará del trabajo aburrido?'},
+  {gen:'millennial genx',platform:'trabajo',emoji:'🌿',title:'Semana laboral de 4 días: el experimento global',desc:'Países y empresas que redujeron la semana laboral a 4 días y midieron los resultados.',status:'trending',origin:'Experimentos en Islandia, UK, Japón 2022-2026',famous:'Países nórdicos, empresas tech',why:'Los resultados muestran igual o mayor productividad con menos horas',full:'En 2026, la semana de 4 días dejó de ser utopía para convertirse en política en decenas de empresas y algunos países. Millennials y Gen X son los más beneficiados. Gen Z exige que sea el estándar. Boomers y Gen X conservadores la cuestionan.'},
+];
+
+let activeGen = 'all';
+let activePlatform = 'all';
+
+function renderRadar(){
+  document.getElementById('radarGrid').innerHTML = DICT.TRENDING_TODAY.map(t=>`
+    <div class="radar-word" onclick="const term=DICT.TERMS.find(x=>x.word.toLowerCase().includes('${t.word.toLowerCase().split(' ')[0]}'));if(term)window.location.href='diccionario.html?word='+term.id;">
+      <div class="rw-word">${t.word}</div>
+      <div class="rw-gen">${t.gen}</div>
+      <div class="rw-trend rw-up">${t.trend}</div>
+    </div>`).join('');
+}
+
+function renderGenTabs(){
+  document.getElementById('genTabs').innerHTML = GEN_FILTERS.map(g=>`
+    <button class="gtab ${g.id===activeGen?'on':''}" onclick="setGen('${g.id}')">${g.label}</button>`).join('');
+}
+
+function setGen(g){ activeGen=g; renderGenTabs(); renderTrends(); }
+
+function renderPlatTabs(){
+  document.getElementById('platTabs').innerHTML = PLATFORMS.map(p=>`
+    <button class="ptab ${p===activePlatform?'on':''}" onclick="setPlatform('${p}')">${PLAT_LABELS[p]}</button>`).join('');
+}
+
+function setPlatform(p){ activePlatform=p; renderPlatTabs(); renderTrends(); }
+
+const BG=['linear-gradient(135deg,#640031,#7A1843)','linear-gradient(135deg,#7A1843,#9b2c5e)','linear-gradient(135deg,#7698B3,#4f7186)','linear-gradient(135deg,#e0b711,#F7CB15)','linear-gradient(135deg,#3d0021,#640031)','linear-gradient(135deg,#1a1a2e,#533483)','linear-gradient(135deg,#0f3460,#7698B3)','linear-gradient(135deg,#232526,#414345)','linear-gradient(135deg,#155724,#28a745)','linear-gradient(135deg,#7f0000,#b71c1c)','linear-gradient(135deg,#1a237e,#3949ab)','linear-gradient(135deg,#4a148c,#7b1fa2)'];
+
+const GEN_LABELS = {alpha:'Gen Alpha',genz:'Gen Z',millennial:'Millennial',genx:'Gen X',boomer:'Boomer',all:'Multi-gen'};
+
+function renderTrends(){
+  let filtered = TRENDS.filter(t=>{
+    const genMatch = activeGen==='all' || t.gen.includes(activeGen);
+    const platMatch = activePlatform==='all' || t.platform.includes(activePlatform);
+    return genMatch && platMatch;
+  });
+
+  if(!filtered.length){
+    document.getElementById('trendGrid').innerHTML=`<div class="no-results">No hay tendencias para esta combinación de filtros.</div>`;
+    return;
+  }
+
+  document.getElementById('trendGrid').innerHTML = filtered.map((t,i)=>{
+    const statusLabel={'viral':'🔥 Viral','trending':'📈 En tendencia','past':'📉 Pasada'}[t.status]||'';
+    const statusClass={'viral':'tc-viral','trending':'tc-trending','past':'tc-past'}[t.status]||'';
+    const genLabel = t.gen.split(' ').map(g=>GEN_LABELS[g]||g).join(' · ');
+    return `<div class="tcard reveal" style="transition-delay:${i*.04}s">
+      <div class="tcard-vis" style="background:${BG[i%BG.length]}">
+        <span style="font-size:64px">${t.emoji}</span>
+        <span class="tc-badge ${statusClass}">${statusLabel}</span>
+        <span class="tc-gen-badge">${genLabel}</span>
+      </div>
+      <div class="tcard-body">
+        <div class="tc-platform">${t.platform.toUpperCase()}</div>
+        <div class="tc-title">${t.title}</div>
+        <div class="tc-desc">${t.desc}</div>
+        <button class="tc-more-btn" onclick="toggleDetail(this)">Ver más ▾</button>
+        <div class="tc-detail">
+          <div class="tc-detail-row"><b>📅 Origen:</b> ${t.origin}</div>
+          <div class="tc-detail-row"><b>⭐ Quién la hizo famosa:</b> ${t.famous}</div>
+          <div class="tc-detail-row"><b>🔥 Por qué es viral:</b> ${t.why}</div>
+          <div class="tc-detail-row" style="margin-top:8px;">${t.full}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.reveal').forEach(r=>{
+    new IntersectionObserver(e=>{if(e[0].isIntersecting)e[0].target.classList.add('visible');},{threshold:.1}).observe(r);
+  });
+}
+
+function toggleDetail(btn){
+  const d=btn.nextElementSibling;
+  d.classList.toggle('open');
+  btn.textContent=d.classList.contains('open')?'Ver menos ▴':'Ver más ▾';
+}
+
+renderRadar();
+renderGenTabs();
+renderPlatTabs();
+renderTrends();
+</script>
+</body>
+</html>

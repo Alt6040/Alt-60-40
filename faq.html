@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<style>
+.faq-body{max-width:820px;margin:0 auto;padding:56px 48px 80px;}
+.faq-search{display:flex;align-items:center;gap:0;background:var(--card-bg);border:2px solid var(--wine);border-radius:12px;overflow:hidden;margin-bottom:40px;}
+.faq-search svg{margin:0 16px;width:20px;height:20px;fill:var(--gray);flex-shrink:0;}
+.faq-search input{flex:1;border:none;outline:none;font-size:15px;font-family:var(--fB);padding:15px 0;color:var(--text);background:transparent;}
+.faq-cat-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;}
+.faq-cat-btn{font-family:var(--fD);font-size:12.5px;font-weight:700;padding:7px 16px;border-radius:100px;border:1.5px solid var(--border);background:var(--card-bg);color:var(--wine);cursor:pointer;transition:all .15s;}
+.faq-cat-btn.on,.faq-cat-btn:hover{background:var(--wine);color:#fff;border-color:var(--wine);}
+.faq-group{margin-bottom:32px;}
+.faq-group-title{font-family:var(--fD);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--magenta);margin-bottom:12px;}
+.faq-item{border:1.5px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;transition:border-color .15s;}
+.faq-item:hover{border-color:var(--wine);}
+.faq-q{font-family:var(--fD);font-size:14.5px;font-weight:700;color:var(--wine);cursor:pointer;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none;}
+.faq-arrow{font-size:13px;transition:transform .2s;flex-shrink:0;}
+.faq-a{font-size:14px;color:var(--text-soft);line-height:1.75;padding:0 20px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;}
+.faq-a.open{max-height:400px;padding:0 20px 18px;}
+</style>
+</head>
+<body>
+<div id="site-nav-placeholder"></div>
+<div class="page-hero">
+  <div class="page-hero-eyebrow">❓ FAQ</div>
+  <h1 class="page-hero-title">Preguntas frecuentes</h1>
+  <p class="page-hero-sub">Todo lo que necesitas saber sobre ALT 60/40, el diccionario, los cursos y cómo funciona la plataforma.</p>
+</div>
+
+<div class="faq-body">
+  <div class="faq-search">
+    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 5L21.49 19l-5-5zm-6 0A4.5 4.5 0 1110 5a4.5 4.5 0 010 9z"/></svg>
+    <input type="text" id="faqSearch" placeholder="Busca tu pregunta..." oninput="filterFAQ()">
+  </div>
+
+  <div class="faq-cat-row" id="faqCats"></div>
+  <div id="faqContent"></div>
+</div>
+
+<div id="site-footer-placeholder"></div>
+<script src="js/app-core.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script>
+initPage({page:'faq.html',title:'FAQ',description:'Preguntas frecuentes sobre ALT 60/40: el diccionario, cursos, planes y cómo funciona la plataforma.'});
+
+const FAQ_DATA = [
+  { cat:'plataforma', q:'¿Qué es ALT 60/40?', a:'ALT 60/40 es una plataforma educativa que traduce el lenguaje digital —memes, slang, tendencias, emojis— en explicaciones claras y accesibles para todas las generaciones. No enseñamos a usar apps: ayudamos a entender qué pasa dentro de ellas.' },
+  { cat:'plataforma', q:'¿Para quién es ALT 60/40?', a:'Para cualquier persona que quiera entender el lenguaje digital de hoy: padres, abuelos, docentes, profesionales, empresas, colegios y cualquier curioso. No hay límite de edad ni nivel previo requerido.' },
+  { cat:'plataforma', q:'¿Con qué frecuencia se actualiza el contenido?', a:'El diccionario y las tendencias se actualizan semanalmente. Los cursos se revisan mensualmente. El radar de tendencias se actualiza en tiempo real.' },
+  { cat:'diccionario', q:'¿Cómo busco un término en el diccionario?', a:'Puedes buscar por palabra, emoji o categoría usando la barra de búsqueda con autocompletado. También puedes filtrar por plataforma (TikTok, Gaming, Memes, etc.) o explorar por popularidad.' },
+  { cat:'diccionario', q:'¿Puedo guardar términos favoritos?', a:'Sí. Crea una cuenta gratuita y usa el botón ⭐ en cualquier término para guardarlo. Tus favoritos aparecerán en tu perfil y podrás acceder a ellos desde cualquier dispositivo.' },
+  { cat:'diccionario', q:'¿Qué información tiene cada término?', a:'Cada entrada incluye: definición clara, pronunciación, ejemplo de uso, traducción formal, fecha de aparición, popularidad, generación que más lo usa, plataformas, sinónimos y términos relacionados.' },
+  { cat:'traductor', q:'¿Cómo funciona el Traductor Generacional?', a:'Escribes una frase en lenguaje digital y la IA la traduce al español formal (o viceversa). También puedes usar el modo Chat para hacerle preguntas libres sobre cualquier término, emoji o tendencia.' },
+  { cat:'traductor', q:'¿La IA responde en tiempo real?', a:'Sí. El traductor y el chat usan un modelo de IA que responde en segundos. El plan gratuito tiene un límite diario de traducciones; el plan Premium es ilimitado.' },
+  { cat:'traductor', q:'¿Puedo analizar capturas de pantalla?', a:'Sí, con el plan Premium. Sube una imagen de una conversación y la IA explicará cada término, meme o emoji presente en ella.' },
+  { cat:'cursos', q:'¿Cómo funcionan los cursos?', a:'Los cursos están organizados por nivel (Principiante, Intermedio, Avanzado) y contienen lecciones cortas, quizzes y actividades prácticas. Tu progreso se guarda automáticamente.' },
+  { cat:'cursos', q:'¿Los cursos tienen certificado?', a:'Sí. Al completar cualquier curso al 100% recibes un certificado digital de ALT 60/40 que puedes compartir en redes sociales o descargar en PDF.' },
+  { cat:'cursos', q:'¿Cuánto tiempo toman los cursos?', a:'Los cursos más cortos duran 45 minutos y los más completos hasta 1h40. Puedes avanzar a tu propio ritmo: el progreso se guarda aunque salgas a mitad de una lección.' },
+  { cat:'cuenta', q:'¿Necesito crear una cuenta?', a:'El diccionario básico, las tendencias y el quiz son de acceso libre. Para guardar favoritos, ver tu progreso, acceder a cursos completos y usar el traductor ilimitado necesitas una cuenta.' },
+  { cat:'cuenta', q:'¿Es segura mi información?', a:'Sí. No compartimos tu información personal con terceros. Lee nuestra política de privacidad para más detalles sobre cómo protegemos tus datos.' },
+  { cat:'cuenta', q:'¿Puedo usar Google para iniciar sesión?', a:'Sí. Puedes registrarte con tu cuenta de Google con un solo clic, sin necesidad de crear contraseña.' },
+  { cat:'planes', q:'¿El plan gratis tiene límite de tiempo?', a:'No. El plan gratuito es permanente. Solo tiene limitaciones en la cantidad de funciones y el número de traducciones diarias.' },
+  { cat:'planes', q:'¿Puedo cancelar en cualquier momento?', a:'Sí. Puedes cancelar tu suscripción Premium cuando quieras desde tu perfil. El acceso se mantiene hasta el final del período pagado.' },
+  { cat:'planes', q:'¿Los cursos tienen algún costo?', a:'No. Todos los cursos de ALT 60/40 son completamente gratuitos, incluyendo el certificado oficial. Las capacitaciones presenciales para empresas y colegios tienen precio a medida — escríbenos a Alt.60.40.empresa@gmail.com.' },
+];
+
+const CATS = [
+  {id:'all',label:'Todas'},
+  {id:'plataforma',label:'Plataforma'},
+  {id:'diccionario',label:'Diccionario'},
+  {id:'traductor',label:'Traductor IA'},
+  {id:'cursos',label:'Cursos'},
+  {id:'cuenta',label:'Cuenta'},
+  {id:'planes',label:'Planes'},
+];
+
+let activeCat='all';
+
+function renderCats(){
+  document.getElementById('faqCats').innerHTML=CATS.map(c=>`<button class="faq-cat-btn ${c.id===activeCat?'on':''}" onclick="setFaqCat('${c.id}')">${c.label}</button>`).join('');
+}
+
+function setFaqCat(id){activeCat=id;renderCats();filterFAQ();}
+
+function filterFAQ(){
+  const q=document.getElementById('faqSearch').value.toLowerCase();
+  const filtered=FAQ_DATA.filter(item=>{
+    const catMatch=activeCat==='all'||item.cat===activeCat;
+    const textMatch=!q||item.q.toLowerCase().includes(q)||item.a.toLowerCase().includes(q);
+    return catMatch&&textMatch;
+  });
+
+  const grouped={};
+  filtered.forEach(item=>{
+    if(!grouped[item.cat])grouped[item.cat]=[];
+    grouped[item.cat].push(item);
+  });
+
+  const CAT_LABELS={plataforma:'Plataforma',diccionario:'Diccionario',traductor:'Traductor IA',cursos:'Cursos',cuenta:'Cuenta',planes:'Planes y precios'};
+
+  document.getElementById('faqContent').innerHTML=Object.keys(grouped).map(cat=>`
+    <div class="faq-group">
+      <div class="faq-group-title">${CAT_LABELS[cat]||cat}</div>
+      ${grouped[cat].map(item=>`
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFAQ(this)">
+            ${item.q}
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-a">${item.a}</div>
+        </div>`).join('')}
+    </div>`).join('')||`<div style="text-align:center;padding:48px;color:var(--gray);">No se encontraron preguntas para tu búsqueda.</div>`;
+}
+
+function toggleFAQ(qEl){
+  const aEl=qEl.nextElementSibling;
+  const arrow=qEl.querySelector('.faq-arrow');
+  const isOpen=aEl.classList.contains('open');
+  document.querySelectorAll('.faq-a.open').forEach(el=>{el.classList.remove('open');el.previousElementSibling.querySelector('.faq-arrow').textContent='▾';});
+  if(!isOpen){aEl.classList.add('open');arrow.textContent='▴';}
+}
+
+renderCats();
+filterFAQ();
+</script>
+</body>
+</html>

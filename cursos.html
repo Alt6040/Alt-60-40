@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<style>
+.courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:0 48px 64px;}
+.course-card{background:var(--card-bg);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.course-card:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(100,0,49,.1);}
+.course-level-band{padding:10px 20px;font-family:var(--fD);font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;}
+.lb-beg{background:var(--steel);}
+.lb-int{background:var(--magenta);}
+.lb-adv{background:var(--wine);}
+.course-body{padding:26px;}
+.course-icon{font-size:36px;margin-bottom:14px;}
+.course-title{font-family:var(--fD);font-size:18px;font-weight:800;color:var(--wine);margin-bottom:8px;line-height:1.2;}
+.course-desc{font-size:13.5px;color:var(--text-soft);line-height:1.65;margin-bottom:16px;}
+.course-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--gray);margin-bottom:16px;}
+.course-topics{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
+.ct-item{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-soft);}
+.ct-dot{width:6px;height:6px;border-radius:50%;background:var(--wine);flex-shrink:0;}
+.course-progress{margin-bottom:16px;}
+.cp-head{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;}
+.cp-label{color:var(--gray);font-weight:600;}
+.cp-pct{font-family:var(--fD);font-weight:700;color:var(--wine);}
+.cp-bar{height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.cp-fill{height:100%;background:linear-gradient(90deg,var(--wine),var(--magenta));border-radius:4px;transition:width .8s;}
+.course-btn{width:100%;padding:13px;font-family:var(--fD);font-weight:700;font-size:14px;border:none;border-radius:10px;cursor:pointer;transition:all .15s;}
+.cb-start{background:var(--wine);color:#fff;}
+.cb-start:hover{background:var(--magenta);}
+.cb-continue{background:var(--bg-soft);color:var(--wine);border:1.5px solid var(--wine);}
+.cb-continue:hover{background:var(--wine);color:#fff;}
+.cb-done{background:#dcfce7;color:#15803d;border:1.5px solid #86efac;}
+.cb-done:hover{background:#16a34a;color:#fff;}
+.locked-overlay{position:relative;}
+.locked-badge{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:100px;letter-spacing:.5px;}
+.cert-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center;}
+.cert-modal.open{display:flex;}
+.cert-box{background:#fff;border-radius:20px;padding:48px;max-width:480px;width:100%;text-align:center;position:relative;}
+.cert-title{font-family:var(--fD);font-size:32px;font-weight:800;color:var(--wine);margin-bottom:8px;}
+.cert-name{font-family:var(--fD);font-size:22px;font-weight:700;color:var(--ink);margin:16px 0 8px;}
+.cert-course{font-size:16px;color:var(--gray);margin-bottom:24px;}
+.cert-seal{font-size:56px;margin-bottom:16px;}
+@media(max-width:900px){
+  .courses-grid{grid-template-columns:1fr;padding:0 20px 48px;}
+}
+</style>
+</head>
+<body>
+<div id="site-nav-placeholder"></div>
+<div class="page-hero">
+  <div class="page-hero-eyebrow">🎓 Cursos</div>
+  <h1 class="page-hero-title">Cursos 100% gratuitos</h1>
+  <p class="page-hero-sub">Todos los cursos son gratis. Aprende a tu ritmo, guarda tu progreso y obtén tu certificado sin costo.</p>
+</div>
+
+<div style="background:var(--gold);padding:14px 48px;text-align:center;">
+  <div style="max-width:900px;margin:0 auto;font-family:var(--fD);font-size:14px;font-weight:700;color:var(--wine);">
+    🎉 Todos los cursos son gratuitos — incluyendo el certificado oficial. Sin tarjeta, sin suscripción.
+  </div>
+</div>
+<div style="padding:32px 48px 28px;max-width:100%;" id="filterRow"></div>
+<div class="courses-grid" id="coursesGrid"></div>
+
+<!-- CERT MODAL -->
+<div class="cert-modal" id="certModal">
+  <div class="cert-box">
+    <button class="modal-close" onclick="document.getElementById('certModal').classList.remove('open')">×</button>
+    <div class="cert-seal">🏅</div>
+    <div class="cert-title">Certificado ALT 60/40</div>
+    <div style="font-size:14px;color:var(--gray);">Esto certifica que</div>
+    <div class="cert-name" id="certName">Tu nombre</div>
+    <div style="font-size:14px;color:var(--gray);">completó exitosamente el curso</div>
+    <div class="cert-course" id="certCourse">—</div>
+    <div style="font-size:13px;color:var(--gray);margin-bottom:24px;">Fecha: ${new Date().toLocaleDateString('es-CL')}</div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button onclick="ALT.copyText('Completé el curso de ' + document.getElementById('certCourse').textContent + ' en ALT 60/40 🎓');document.getElementById('certModal').classList.remove('open');" style="background:var(--wine);color:#fff;border:none;border-radius:9px;padding:12px 24px;font-family:var(--fD);font-weight:700;font-size:14px;cursor:pointer;">Compartir logro</button>
+    </div>
+  </div>
+</div>
+
+<div id="site-footer-placeholder"></div>
+<script src="js/app-core.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script>
+initPage({page:'cursos.html',title:'Cursos',description:'Aprende cultura digital con cursos desde principiante hasta avanzado. Con progreso, certificados y contenido práctico.'});
+
+const COURSES=[
+  {id:'tiktok-101',emoji:'🎵',name:'Introducción a TikTok',level:'beg',levelLabel:'Principiante',desc:'Conoce la plataforma que domina la cultura digital: formatos, algoritmo, tendencias y cómo funciona para los jóvenes de hoy.',lessons:6,time:'45 min',topics:['Qué es TikTok y por qué importa','Formatos de contenido: FYP, Sounds, Duets','Cómo funciona el algoritmo','Los trends: cómo nacen y mueren','Vocabulario básico de TikTok','Cómo hablar con alguien que usa TikTok']},
+  {id:'gen-z-lang',emoji:'💬',name:'Lenguaje Gen Z',level:'int',levelLabel:'Intermedio',desc:'Domina las expresiones, slang y referencias más usadas por la generación Z. Con ejemplos reales y contexto cultural.',lessons:10,time:'1h 20min',topics:['Orígenes del slang digital','Términos de uso cotidiano: rizz, aura, era','Expresiones de aprobación y rechazo','El lenguaje de las emociones online','Ironía y sarcasmo digital','Cómo evitar malentendidos generacionales']},
+  {id:'ia-basics',emoji:'🤖',name:'IA para principiantes',level:'adv',levelLabel:'Avanzado',desc:'Entiende cómo la inteligencia artificial está transformando la comunicación, el trabajo y la cultura digital actual.',lessons:8,time:'1h 10min',topics:['Qué es la IA generativa en términos simples','ChatGPT, DALL-E y herramientas populares','IA en redes sociales: filtros y recomendaciones','Riesgos: deepfakes y desinformación','IA en el trabajo: oportunidades reales','El futuro de la comunicación con IA'],locked:false},
+  {id:'social-101',emoji:'📱',name:'Redes Sociales 101',level:'beg',levelLabel:'Principiante',desc:'Un recorrido por Instagram, TikTok, X y YouTube: para qué sirve cada una, cómo funcionan y cómo usarlas con seguridad.',lessons:7,time:'50 min',topics:['Las 5 redes más importantes hoy','Diferencias entre plataformas','Privacidad y configuración básica','Cómo se viraliza el contenido','Redes para diferentes edades','Cómo conectar con familia en redes']},
+  {id:'memes-culture',emoji:'😂',name:'Memes y cultura visual',level:'int',levelLabel:'Intermedio',desc:'Aprende a leer memes, entender su contexto cultural y por qué se vuelven virales. La historia visual de internet.',lessons:9,time:'1h 05min',topics:['Qué es un meme y por qué existen','Historia: de 4chan a TikTok','Los memes más influyentes de internet','Cómo "leer" un meme nuevo','Memes generacionales: diferencias','Cuándo un meme muere'],locked:true},
+  {id:'digital-safety',emoji:'🔒',name:'Seguridad Digital',level:'adv',levelLabel:'Avanzado',desc:'Protégete en internet: privacidad, estafas online, contraseñas seguras y cómo navegar sin riesgos en la era digital.',lessons:11,time:'1h 40min',topics:['Las estafas digitales más comunes','Contraseñas seguras: cómo crearlas','Privacidad en redes sociales','Reconocer desinformación y fake news','Phishing y cómo evitarlo','Proteger a menores en internet'],locked:true},
+];
+
+let activeLevelFilter='all';
+
+function renderFilterRow(){
+  document.getElementById('filterRow').innerHTML=`
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    ${[{id:'all',label:'Todos'},
+       {id:'beg',label:'Principiante'},
+       {id:'int',label:'Intermedio'},
+       {id:'adv',label:'Avanzado'}].map(f=>`<button style="font-family:var(--fD);font-size:13px;font-weight:700;background:${f.id===activeLevelFilter?'var(--wine)':'var(--card-bg)'};border:1.5px solid ${f.id===activeLevelFilter?'var(--wine)':'var(--border)'};color:${f.id===activeLevelFilter?'#fff':'var(--wine)'};padding:9px 18px;border-radius:100px;cursor:pointer;" onclick="activeLevelFilter='${f.id}';renderFilterRow();renderCourses();">${f.label}</button>`).join('')}
+  </div>`;
+}
+
+function renderCourses(){
+  const list=activeLevelFilter==='all'?COURSES:COURSES.filter(c=>c.level===activeLevelFilter);
+  document.getElementById('coursesGrid').innerHTML=list.map((c,i)=>{
+    const prog=ALT.getCourseProgress(c.id);
+    const done=prog>=100;
+    const started=prog>0&&prog<100;
+    return`<div class="course-card reveal" style="transition-delay:${i*.06}s;${c.locked?'opacity:.7':''}">
+      ${c.locked?`<div class="locked-badge">🔒 Próximamente</div>`:''}
+      <div class="course-level-band lb-${c.level}">${c.levelLabel}</div>
+      <div class="course-body">
+        <div class="course-icon">${c.emoji}</div>
+        <div class="course-title">${c.name}</div>
+        <div class="course-desc">${c.desc}</div>
+        <div class="course-meta"><span>📚 ${c.lessons} lecciones</span><span>⏱ ${c.time}</span></div>
+        <div class="course-topics">${c.topics.slice(0,4).map(t=>`<div class="ct-item"><div class="ct-dot"></div>${t}</div>`).join('')}${c.topics.length>4?`<div style="font-size:12px;color:var(--gray);">+ ${c.topics.length-4} más...</div>`:''}</div>
+        <div class="course-progress">
+          <div class="cp-head"><span class="cp-label">Progreso</span><span class="cp-pct">${prog}%</span></div>
+          <div class="cp-bar"><div class="cp-fill" style="width:${prog}%"></div></div>
+        </div>
+    ${c.locked
+          ?`<button class="course-btn" style="background:var(--bg-soft);color:var(--gray);border:1.5px solid var(--border);" disabled>🔜 Próximamente</button>`
+          :done
+          ?`<button class="course-btn cb-done" onclick="showCert('${c.id}','${c.name}')">🏅 Ver certificado gratis</button>`
+          :started
+          ?`<button class="course-btn cb-continue" onclick="simulateProgress('${c.id}','${c.name}')">Continuar curso →</button>`
+          :`<button class="course-btn cb-start" onclick="simulateProgress('${c.id}','${c.name}')">Empezar gratis →</button>`}
+      </div>
+    </div>`;}).join('');
+  document.querySelectorAll('.reveal').forEach(r=>{new IntersectionObserver(e=>{if(e[0].isIntersecting)e[0].target.classList.add('visible');},{threshold:.1}).observe(r);});
+}
+
+function simulateProgress(id,name){
+  if(!ALT.isLoggedIn()){document.getElementById('loginModal').classList.add('open');ALT.toast('⚠️ Inicia sesión para guardar tu progreso');return;}
+  const cur=ALT.getCourseProgress(id);
+  const next=Math.min(cur+20,100);
+  ALT.setCourseProgress(id,next);
+  if(next>=100){ALT.toast('🎓 ¡Curso completado! Ganaste un certificado');showCert(id,name);}else{ALT.toast(`📚 Progreso: ${next}%`);}
+  renderCourses();
+}
+
+function showCert(id,name){
+  document.getElementById('certName').textContent=ALT.state.user?.name||'Estudiante';
+  document.getElementById('certCourse').textContent=name;
+  document.getElementById('certModal').classList.add('open');
+}
+
+document.getElementById('certModal').addEventListener('click',e=>{if(e.target===document.getElementById('certModal'))document.getElementById('certModal').classList.remove('open');});
+
+renderFilterRow();
+renderCourses();
+</script>
+</body>
+</html>

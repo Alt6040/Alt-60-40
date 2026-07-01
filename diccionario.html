@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<style>
+.dict-hero{background:var(--wine);background-image:radial-gradient(ellipse 70% 60% at 15% 20%,rgba(122,24,67,.7) 0%,transparent 60%);padding:48px 48px 64px;text-align:center;position:relative;overflow:hidden;}
+.dict-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,var(--bg));}
+.search-wrap{position:relative;max-width:680px;margin:32px auto 0;}
+.search-box{display:flex;align-items:center;background:var(--white);border-radius:14px;border:3px solid var(--gold);overflow:hidden;box-shadow:0 12px 40px rgba(247,203,21,.25);}
+.search-icon{padding:0 18px;flex-shrink:0;}
+.search-icon svg{width:20px;height:20px;fill:var(--gray);}
+.search-input{flex:1;border:none;outline:none;font-size:16px;font-family:var(--fB);padding:18px 0;color:var(--ink);background:transparent;}
+.search-input::placeholder{color:var(--gray);}
+html.dark .search-input{color:var(--white);}
+html.dark .search-box{background:#1a0a14;border-color:var(--gold);}
+.search-btn{background:var(--wine);color:#fff;border:none;padding:0 24px;height:62px;font-family:var(--fD);font-weight:700;font-size:14px;cursor:pointer;flex-shrink:0;transition:background .15s;}
+.search-btn:hover{background:var(--magenta);}
+.autocomplete-list{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--card-bg);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;z-index:300;box-shadow:0 16px 48px rgba(0,0,0,.15);display:none;}
+.autocomplete-list.show{display:block;}
+.ac-item{display:flex;align-items:center;gap:14px;padding:13px 18px;cursor:pointer;transition:background .12s;border-bottom:1px solid var(--border);}
+.ac-item:last-child{border-bottom:none;}
+.ac-item:hover{background:var(--bg-soft);}
+.ac-emoji{font-size:20px;width:28px;text-align:center;}
+.ac-word{font-family:var(--fD);font-size:15px;font-weight:700;color:var(--wine);}
+.ac-def{font-size:12px;color:var(--gray);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;}
+.history-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px;position:relative;z-index:2;}
+.history-label{font-size:11px;color:rgba(255,255,255,.55);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.history-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);font-size:12px;padding:5px 12px;border-radius:100px;cursor:pointer;transition:all .15s;font-family:var(--fD);font-weight:600;}
+.history-chip:hover{background:rgba(255,255,255,.2);}
+.cat-strip{background:var(--bg-soft);border-bottom:1px solid var(--border);padding:0 48px;overflow-x:auto;display:flex;gap:0;scrollbar-width:none;}
+.cat-strip::-webkit-scrollbar{display:none;}
+.cat-btn{display:flex;align-items:center;gap:7px;padding:16px 18px;font-family:var(--fD);font-size:13px;font-weight:600;color:var(--gray);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.cat-btn:hover{color:var(--wine);}
+.cat-btn.active{color:var(--wine);border-bottom-color:var(--wine);}
+.dict-layout{display:grid;grid-template-columns:290px 1fr 220px;min-height:600px;}
+.term-list{border-right:1px solid var(--border);overflow-y:auto;max-height:calc(100vh - 200px);}
+.term-list-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:10;}
+.term-list-title{font-family:var(--fD);font-size:11px;font-weight:700;color:var(--gray);letter-spacing:1.5px;text-transform:uppercase;}
+.sort-select{font-size:11px;color:var(--gray);border:1px solid var(--border);border-radius:6px;padding:4px 8px;background:var(--bg);font-family:var(--fB);cursor:pointer;outline:none;}
+.term-item{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;}
+.term-item:hover{background:var(--bg-soft);}
+.term-item.selected{background:#f5eef1;border-left:3px solid var(--wine);}
+html.dark .term-item.selected{background:rgba(100,0,49,.25);}
+.ti-emoji{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
+.ti-info{flex:1;min-width:0;}
+.ti-word{font-family:var(--fD);font-size:13px;font-weight:700;color:var(--wine);}
+.ti-cat{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:1px;}
+.ti-pop{width:100%;height:3px;background:var(--border);border-radius:2px;margin-top:5px;}
+.ti-pop-fill{height:100%;background:var(--gold);border-radius:2px;}
+.ti-fav{background:none;border:none;cursor:pointer;font-size:15px;padding:4px;opacity:.4;transition:opacity .15s;flex-shrink:0;}
+.ti-fav:hover,.ti-fav.on{opacity:1;}
+.term-detail{padding:32px 36px;overflow-y:auto;max-height:calc(100vh - 200px);}
+.td-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:400px;color:var(--gray);text-align:center;}
+.td-word{font-family:var(--fD);font-size:42px;font-weight:800;color:var(--wine);line-height:1;margin-bottom:4px;}
+.td-pron{font-size:14px;color:var(--gray);font-style:italic;margin-bottom:16px;}
+.td-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.td-action-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid var(--border);border-radius:9px;background:var(--card-bg);font-size:12.5px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;font-family:var(--fD);}
+.td-action-btn:hover{border-color:var(--wine);color:var(--wine);}
+.td-action-btn.fav-on{background:#fff8e1;border-color:var(--gold);color:var(--gold-d);}
+.td-tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;}
+.td-tag{font-size:10.5px;font-weight:700;padding:4px 11px;border-radius:100px;text-transform:uppercase;letter-spacing:.5px;}
+.td-tag.gen{background:#eaf1f5;color:var(--steel);}
+.td-tag.date{background:#fdf2e0;color:#8a6010;}
+.td-tag.pop{background:#f5eef1;color:var(--magenta);}
+html.dark .td-tag.gen{background:rgba(118,152,179,.2);}
+html.dark .td-tag.date{background:rgba(247,203,21,.1);}
+html.dark .td-tag.pop{background:rgba(122,24,67,.3);}
+.td-pop-bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.td-pop-label{font-size:11.5px;font-weight:600;color:var(--gray);width:80px;flex-shrink:0;}
+.td-pop-track{flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.td-pop-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-d));border-radius:4px;transition:width .7s var(--ease);}
+.td-pop-pct{font-family:var(--fD);font-size:13px;font-weight:700;color:var(--wine);}
+.td-section{margin-bottom:22px;}
+.td-section-label{font-family:var(--fD);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;}
+.td-def{font-size:15px;line-height:1.8;color:var(--text-soft);}
+.td-example{background:var(--bg-soft);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:13px 16px;font-size:14px;color:var(--text-soft);font-style:italic;}
+html.dark .td-example{background:rgba(247,203,21,.05);}
+.td-chips{display:flex;gap:7px;flex-wrap:wrap;}
+.td-chip{background:var(--bg-soft);color:var(--wine);border:1px solid var(--border);font-size:12.5px;font-weight:600;padding:5px 13px;border-radius:100px;cursor:pointer;transition:all .15s;font-family:var(--fD);}
+html.dark .td-chip{color:var(--gold);background:rgba(247,203,21,.08);}
+.td-chip:hover{background:var(--wine);color:#fff;border-color:var(--wine);}
+.td-platform{background:rgba(118,152,179,.12);color:var(--steel);font-size:11.5px;font-weight:600;padding:4px 12px;border-radius:100px;}
+html.dark .td-platform{background:rgba(118,152,179,.25);}
+.td-formal{background:linear-gradient(135deg,var(--wine),var(--magenta));border-radius:12px;padding:16px 20px;margin-top:4px;}
+.td-formal-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:5px;}
+.td-formal-text{font-size:14px;color:#fff;font-style:italic;line-height:1.6;}
+.td-mark-btn{display:flex;align-items:center;gap:8px;margin-top:24px;padding:12px 20px;background:var(--bg-soft);border:1.5px solid var(--border);border-radius:10px;font-family:var(--fD);font-size:13.5px;font-weight:700;color:var(--wine);cursor:pointer;transition:all .15s;}
+.td-mark-btn:hover{background:var(--wine);color:#fff;border-color:var(--wine);}
+.td-mark-btn.learned{background:#dcfce7;color:#15803d;border-color:#86efac;}
+.trending-sidebar{border-left:1px solid var(--border);padding:20px 16px;overflow-y:auto;max-height:calc(100vh - 200px);}
+.trending-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.trending-row:last-child{border-bottom:none;}
+.trending-row:hover .tr-word{color:var(--wine);}
+.tr-rank{font-family:var(--fD);font-size:12px;font-weight:800;color:var(--gold);width:18px;}
+.tr-word{font-family:var(--fD);font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.tr-trend{font-size:10px;font-weight:700;}
+.tr-trend.up{color:#16a34a;}.tr-trend.down{color:#dc2626;}
+@media(max-width:900px){
+  .dict-layout{grid-template-columns:1fr;}
+  .term-list{border-right:none;border-bottom:1px solid var(--border);max-height:280px;}
+  .term-detail{max-height:none;padding:20px;}
+  .trending-sidebar{display:none!important;}
+  .dict-hero{padding:36px 20px 48px;}
+  .cat-strip{padding:0 12px;}
+}
+</style>
+</head>
+<body>
+<div id="site-nav-placeholder"></div>
+
+<div class="dict-hero">
+  <div style="position:relative;z-index:2;">
+    <div class="page-hero-eyebrow">📖 Diccionario Digital</div>
+    <h1 style="font-family:var(--fD);font-size:clamp(28px,4vw,44px);font-weight:800;color:var(--white);letter-spacing:-1px;line-height:1.1;">Busca cualquier término</h1>
+    <p style="font-size:15px;color:rgba(250,250,255,.75);max-width:500px;margin:12px auto 0;line-height:1.7;">Definiciones, ejemplos, popularidad y traducción formal. Siempre actualizado.</p>
+    <div class="search-wrap">
+      <div class="search-box">
+        <div class="search-icon"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 5L21.49 19l-5-5zm-6 0A4.5 4.5 0 1110 5a4.5 4.5 0 010 9z"/></svg></div>
+        <input class="search-input" id="mainSearch" placeholder="Busca: rizz, skibidi, 💀, cringe..." autocomplete="off" aria-label="Buscar término">
+        <button class="search-btn" onclick="doSearch()">Buscar</button>
+      </div>
+      <div class="autocomplete-list" id="acList"></div>
+      <div class="history-row" id="historyRow" style="display:none;">
+        <span class="history-label">Recientes:</span>
+        <div id="historyChips"></div>
+        <button onclick="ALT.state.history=[];ALT.save();renderHistory();" style="font-size:11px;color:rgba(255,255,255,.4);background:none;border:none;cursor:pointer;text-decoration:underline;">Borrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cat-strip" id="catStrip"></div>
+
+<div style="max-width:100%;">
+  <div class="dict-layout">
+    <div class="term-list">
+      <div class="term-list-header">
+        <span class="term-list-title" id="listCount">0 términos</span>
+        <select class="sort-select" id="sortSelect" onchange="renderList()">
+          <option value="alpha">A-Z</option>
+          <option value="pop">Popularidad</option>
+        </select>
+      </div>
+      <div id="termListBody"></div>
+    </div>
+
+    <div class="term-detail" id="termDetail">
+      <div class="td-empty">
+        <div style="font-size:56px;margin-bottom:16px;">📖</div>
+        <div style="font-family:var(--fD);font-size:16px;font-weight:700;color:var(--gray);margin-bottom:8px;">Elige un término</div>
+        <div style="font-size:13px;color:var(--gray);">Selecciona de la lista o busca algo arriba</div>
+      </div>
+    </div>
+
+    <div class="trending-sidebar">
+      <div style="font-family:var(--fD);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--magenta);margin-bottom:14px;">🔥 Trending hoy</div>
+      <div id="trendingList"></div>
+    </div>
+  </div>
+</div>
+
+<div id="site-footer-placeholder"></div>
+<script src="js/app-core.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script>
+initPage({page:'diccionario.html',title:'Diccionario Digital',description:'Busca cualquier término del lenguaje digital: definiciones, ejemplos, popularidad y generación que lo usa.'});
+
+let activeCategory='all';
+let activeTerm=null;
+let filteredTerms=[...DICT.TERMS];
+const searchInput=document.getElementById('mainSearch');
+const acList=document.getElementById('acList');
+
+function renderCategories(){
+  document.getElementById('catStrip').innerHTML=DICT.CATEGORIES.map(c=>`<button class="cat-btn ${c.id===activeCategory?'active':''}" onclick="setCategory('${c.id}')">${c.emoji} ${c.label}</button>`).join('');
+}
+function setCategory(cat){activeCategory=cat;renderCategories();applyFilters();}
+
+searchInput.addEventListener('input',()=>{
+  const q=searchInput.value.trim();
+  if(q.length<1){acList.classList.remove('show');applyFilters();return;}
+  const matches=DICT.TERMS.filter(t=>t.word.toLowerCase().includes(q.toLowerCase())||t.definition.toLowerCase().includes(q.toLowerCase())||(t.emoji&&t.emoji.includes(q))).slice(0,6);
+  if(!matches.length){acList.classList.remove('show');}else{
+    acList.innerHTML=matches.map(t=>`<div class="ac-item" onclick="selectTermById('${t.id}');searchInput.value='${t.word}';acList.classList.remove('show');"><span class="ac-emoji">${t.emoji}</span><div><div class="ac-word">${t.word}</div><div class="ac-def">${t.definition.slice(0,60)}...</div></div></div>`).join('');
+    acList.classList.add('show');
+  }
+  applyFilters(q);
+});
+searchInput.addEventListener('keydown',e=>{if(e.key==='Enter'){doSearch();acList.classList.remove('show');}if(e.key==='Escape')acList.classList.remove('show');});
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))acList.classList.remove('show');});
+
+function doSearch(){const q=searchInput.value.trim();applyFilters(q);acList.classList.remove('show');if(q){ALT.addHistory(q);renderHistory();}}
+
+function applyFilters(query){
+  const q=(query!==undefined?query:searchInput.value).trim().toLowerCase();
+  filteredTerms=DICT.TERMS.filter(t=>{
+    const catMatch=activeCategory==='all'||t.category===activeCategory;
+    const qMatch=!q||t.word.toLowerCase().includes(q)||t.definition.toLowerCase().includes(q)||t.tags.some(tag=>tag.toLowerCase().includes(q))||(t.emoji&&t.emoji.includes(q));
+    return catMatch&&qMatch;
+  });
+  renderList();
+}
+
+function renderList(){
+  const sort=document.getElementById('sortSelect').value;
+  const sorted=[...filteredTerms].sort((a,b)=>sort==='pop'?b.popularity-a.popularity:a.word.localeCompare(b.word));
+  document.getElementById('listCount').textContent=`${sorted.length} término${sorted.length!==1?'s':''}`;
+  document.getElementById('termListBody').innerHTML=sorted.map(t=>`
+    <div class="term-item ${activeTerm===t.id?'selected':''}" onclick="selectTermById('${t.id}')">
+      <span class="ti-emoji">${t.emoji}</span>
+      <div class="ti-info"><div class="ti-word">${t.word}</div><div class="ti-cat">${t.category}</div><div class="ti-pop"><div class="ti-pop-fill" style="width:${t.popularity}%"></div></div></div>
+      <button class="ti-fav ${ALT.isFavorite(t.id)?'on':''}" onclick="event.stopPropagation();toggleFav('${t.id}',this)">${ALT.isFavorite(t.id)?'⭐':'☆'}</button>
+    </div>`).join('')||`<div style="padding:28px;text-align:center;color:var(--gray);font-size:14px;">No se encontraron términos</div>`;
+}
+
+function selectTermById(id){
+  activeTerm=id;
+  const t=DICT.TERMS.find(x=>x.id===id);
+  if(!t)return;
+  ALT.addHistory(t.word);renderList();
+  const isFav=ALT.isFavorite(t.id);
+  const isLearned=ALT.state.learned.includes(t.id);
+  document.getElementById('termDetail').innerHTML=`
+    <div class="td-word">${t.emoji} ${t.word}</div>
+    <div class="td-pron">${t.pron}</div>
+    <div class="td-actions">
+      <button class="td-action-btn ${isFav?'fav-on':''}" id="favBtn" onclick="toggleFavDetail('${t.id}')">${isFav?'⭐':'☆'} ${isFav?'Guardado':'Guardar'}</button>
+      <button class="td-action-btn" onclick="ALT.copyText('${t.word}: ${t.definition.replace(/'/g,"\\'").replace(/"/g,'\\"')}')">📋 Copiar</button>
+      <button class="td-action-btn" onclick="ALT.shareContent('${t.word}','${t.definition.slice(0,80).replace(/'/g,"\\'")}')">↗ Compartir</button>
+    </div>
+    <div class="td-tags">${t.tags.map(tag=>`<span class="td-tag ${tag.startsWith('Gen')?'gen':tag.match(/20\d\d/)?'date':'pop'}">${tag}</span>`).join('')}</div>
+    <div class="td-pop-bar">
+      <span class="td-pop-label">Popularidad</span>
+      <div class="td-pop-track"><div class="td-pop-fill" id="popFill" style="width:0%"></div></div>
+      <span class="td-pop-pct">${t.popularity}%</span>
+    </div>
+    <div class="td-section"><div class="td-section-label">Definición</div><p class="td-def">${t.definition}</p></div>
+    <div class="td-section"><div class="td-section-label">Ejemplo de uso</div><div class="td-example">${t.example}</div></div>
+    <div class="td-section"><div class="td-section-label">Traducción formal</div><div class="td-formal"><div class="td-formal-label">En lenguaje formal equivale a:</div><div class="td-formal-text">"${t.formalTranslation}"</div></div></div>
+    <div class="td-section"><div class="td-section-label">Generación</div><div style="font-family:var(--fD);font-size:15px;font-weight:700;color:var(--wine);">${t.generation}</div></div>
+    <div class="td-section"><div class="td-section-label">Plataformas</div><div style="display:flex;gap:8px;flex-wrap:wrap;">${t.platforms.map(p=>`<span class="td-platform">${p}</span>`).join('')}</div></div>
+    ${t.synonyms?.length?`<div class="td-section"><div class="td-section-label">Sinónimos</div><div class="td-chips">${t.synonyms.map(s=>`<span class="td-chip">${s}</span>`).join('')}</div></div>`:''}
+    ${t.related?.length?`<div class="td-section"><div class="td-section-label">Términos relacionados</div><div class="td-chips">${t.related.map(r=>{const rt=DICT.TERMS.find(x=>x.id===r);return rt?`<span class="td-chip" onclick="selectTermById('${r}')">${rt.emoji} ${rt.word}</span>`:''}).join('')}</div></div>`:''}
+    <button class="td-mark-btn ${isLearned?'learned':''}" onclick="markLearned('${t.id}')">${isLearned?'✅ Aprendida':'📌 Marcar como aprendida'}</button>`;
+  requestAnimationFrame(()=>{setTimeout(()=>{const f=document.getElementById('popFill');if(f)f.style.width=t.popularity+'%';},50);});
+}
+
+function toggleFav(id,btn){const on=ALT.toggleFavorite(id);btn.textContent=on?'⭐':'☆';btn.classList.toggle('on',on);ALT.toast(on?'⭐ Guardado en favoritos':'Eliminado de favoritos');}
+function toggleFavDetail(id){const on=ALT.toggleFavorite(id);const btn=document.getElementById('favBtn');if(btn){btn.textContent=(on?'⭐':'☆')+' '+(on?'Guardado':'Guardar');btn.classList.toggle('fav-on',on);}renderList();ALT.toast(on?'⭐ Guardado en favoritos':'Eliminado de favoritos');}
+function markLearned(id){ALT.markLearned(id);const btn=document.querySelector('.td-mark-btn');if(btn){btn.textContent='✅ Aprendida';btn.classList.add('learned');}ALT.toast('✅ ¡Marcada como aprendida!');}
+
+function renderHistory(){
+  const row=document.getElementById('historyRow');
+  if(!ALT.state.history.length){row.style.display='none';return;}
+  row.style.display='flex';
+  document.getElementById('historyChips').innerHTML=ALT.state.history.slice(0,5).map(h=>`<button class="history-chip" onclick="searchInput.value='${h.term}';doSearch()">${h.term}</button>`).join('');
+}
+
+document.getElementById('trendingList').innerHTML=DICT.TRENDING_TODAY.map((t,i)=>`
+  <div class="trending-row" onclick="const term=DICT.TERMS.find(x=>x.word.toLowerCase()==='${t.word.toLowerCase()}');if(term)selectTermById(term.id);">
+    <span class="tr-rank">${i+1}</span><span class="tr-word">${t.word}</span>
+    <span class="tr-trend ${t.trend.startsWith('+')?'up':'down'}">${t.trend}</span>
+  </div>`).join('');
+
+renderCategories();applyFilters();renderHistory();
+const urlWord=new URLSearchParams(window.location.search).get('word');
+if(urlWord){const match=DICT.TERMS.find(t=>t.id===urlWord||t.word.toLowerCase()===urlWord.toLowerCase());if(match){searchInput.value=match.word;selectTermById(match.id);}}
+</script>
+</body>
+</html>

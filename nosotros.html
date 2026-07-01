@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<style>
+.about-section{max-width:1100px;margin:0 auto;padding:64px 48px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-bottom:80px;}
+.big-quote{font-family:var(--fD);font-size:clamp(24px,3vw,38px);font-weight:800;color:var(--wine);line-height:1.2;letter-spacing:-.5px;}
+html.dark .big-quote{color:var(--gold);}
+.mission-card{background:linear-gradient(135deg,var(--wine),var(--magenta));border-radius:20px;padding:40px;color:#fff;}
+.mc-label{font-family:var(--fD);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.mc-text{font-size:15.5px;line-height:1.75;color:rgba(255,255,255,.85);}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.team-card{background:var(--card-bg);border:1.5px solid var(--border);border-radius:16px;padding:24px;text-align:center;transition:transform .2s,border-color .2s;}
+.team-card:hover{transform:translateY(-4px);border-color:var(--gold);}
+.team-avatar{width:64px;height:64px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.team-name{font-family:var(--fD);font-size:15px;font-weight:700;color:var(--wine);margin-bottom:4px;}
+.team-role{font-size:12px;color:var(--gray);}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.val-card{background:var(--card-bg);border:1.5px solid var(--border);border-radius:16px;padding:28px;transition:border-color .2s;}
+.val-card:hover{border-color:var(--gold);}
+.val-icon{font-size:32px;margin-bottom:14px;}
+.val-title{font-family:var(--fD);font-size:16px;font-weight:700;color:var(--wine);margin-bottom:8px;}
+.val-text{font-size:13.5px;color:var(--text-soft);line-height:1.65;}
+.org-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:32px;}
+.org-crd{border-radius:18px;padding:32px;color:#fff;}
+.oc1{background:linear-gradient(135deg,var(--wine),#3d0021);}
+.oc2{background:linear-gradient(135deg,var(--magenta),#5a0e2e);}
+.oc3{background:linear-gradient(135deg,var(--steel),#4f7186);}
+.org-icon{font-size:32px;margin-bottom:12px;}
+.org-name{font-family:var(--fD);font-size:17px;font-weight:700;margin-bottom:10px;}
+.org-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.org-list li{font-size:13px;opacity:.85;display:flex;align-items:center;gap:6px;}
+.org-list li::before{content:'→';color:var(--gold);font-weight:700;}
+.org-cta{display:inline-block;margin-top:18px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:10px 18px;border-radius:9px;font-family:var(--fD);font-weight:700;font-size:13px;cursor:pointer;text-decoration:none;transition:background .15s;}
+.org-cta:hover{background:rgba(255,255,255,.25);}
+@media(max-width:900px){
+  .about-section{padding:40px 20px;}
+  .two-col{grid-template-columns:1fr;gap:32px;}
+  .team-grid{grid-template-columns:1fr 1fr;}
+  .values-grid{grid-template-columns:1fr;}
+  .org-cards{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div id="site-nav-placeholder"></div>
+<div class="page-hero">
+  <div class="page-hero-eyebrow">Sobre nosotros</div>
+  <h1 class="page-hero-title">Somos ALT 60/40</h1>
+  <p class="page-hero-sub">Una iniciativa que nació para cerrar la brecha de comunicación entre generaciones en la era digital.</p>
+</div>
+
+<div class="about-section">
+  <!-- HISTORIA -->
+  <div class="two-col reveal">
+    <div>
+      <div class="eyebrow">Nuestra historia</div>
+      <div class="big-quote">La tecnología une. El lenguaje separa. Nosotros traducimos.</div>
+      <p style="font-size:15px;line-height:1.8;color:var(--text-soft);margin-top:18px;">ALT 60/40 nació de una observación simple: mientras las nuevas generaciones dominan el lenguaje digital, millones de personas quedan excluidas de esas conversaciones. No por ignorancia, sino por falta de acceso a la cultura digital.</p>
+      <p style="font-size:15px;line-height:1.8;color:var(--text-soft);margin-top:14px;">Fundamos ALT 60/40 para ser el puente: una plataforma que traduce, explica y contextualiza el lenguaje de internet de forma accesible para todos.</p>
+    </div>
+    <div>
+      <div class="mission-card">
+        <div class="mc-label">Misión</div>
+        <div class="mc-text">Facilitar la comprensión del lenguaje digital mediante contenidos educativos, accesibles y actualizados que reduzcan la brecha comunicacional entre generaciones.</div>
+      </div>
+      <div class="mission-card" style="margin-top:16px;background:linear-gradient(135deg,var(--steel),#4f7186);">
+        <div class="mc-label">Visión</div>
+        <div class="mc-text">Ser la principal plataforma de referencia en comunicación digital intergeneracional en Latinoamérica.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUES -->
+  <div style="margin-bottom:80px;" class="reveal">
+    <div class="eyebrow">Nuestros valores</div>
+    <h2 class="sec-title">Lo que nos guía</h2>
+    <div class="values-grid">
+      <div class="val-card"><div class="val-icon">🤝</div><div class="val-title">Inclusión</div><div class="val-text">Diseñamos para todas las edades, niveles de conocimiento y contextos. Nadie debería quedar fuera de la conversación digital.</div></div>
+      <div class="val-card"><div class="val-icon">📚</div><div class="val-title">Accesibilidad</div><div class="val-text">El conocimiento digital no es privilegio de unos pocos. Hacemos que sea comprensible, cercano y libre de tecnicismos innecesarios.</div></div>
+      <div class="val-card"><div class="val-icon">🔄</div><div class="val-title">Actualización constante</div><div class="val-text">El lenguaje digital cambia cada semana. Nuestro equipo monitorea tendencias en tiempo real para que siempre tengas la información más reciente.</div></div>
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <div id="equipo" style="margin-bottom:80px;" class="reveal">
+    <div class="eyebrow">El equipo</div>
+    <h2 class="sec-title">Quiénes somos</h2>
+    <div class="team-grid">
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--wine),var(--magenta));">👩‍💼</div><div class="team-name">Alexander</div><div class="team-role">CEO — Chief Executive Officer</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--steel),#4f7186);">👩‍💻</div><div class="team-name">Matilda</div><div class="team-role">CTO — Chief Technology Officer</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--gold),#e0b711);">👩‍🎨</div><div class="team-name">Octavia</div><div class="team-role">CCO — Chief Content Officer</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--magenta),#9b2c5e);">👩‍💼</div><div class="team-name">Trinidad</div><div class="team-role">COO — Chief Operating Officer</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#0f3460,var(--steel));">👨‍📣</div><div class="team-name">Joaquín</div><div class="team-role">CMO — Chief Marketing Officer</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#15803d,#166534);">👩‍💰</div><div class="team-name">Tere</div><div class="team-role">CFO — Chief Financial Officer</div></div>
+    </div>
+  </div>
+
+  <!-- PARA ORGANIZACIONES -->
+  <div id="empresas" style="margin-bottom:80px;" class="reveal">
+    <div class="eyebrow">Para organizaciones</div>
+    <h2 class="sec-title">Soluciones a tu medida</h2>
+    <div class="org-cards">
+      <div class="org-crd oc1" id="empresas">
+        <div class="org-icon">🏢</div>
+        <div class="org-name">Empresas</div>
+        <ul class="org-list">
+          <li>Capacitaciones para equipos</li>
+          <li>Charlas corporativas a medida</li>
+          <li>Talleres presenciales y online</li>
+          <li>Consultoría en comunicación digital</li>
+          <li>Licenciamiento de contenidos</li>
+        </ul>
+        <a href="contacto.html" class="org-cta">Solicitar capacitación →</a>
+      </div>
+      <div class="org-crd oc2" id="colegios">
+        <div class="org-icon">🏫</div>
+        <div class="org-name">Colegios</div>
+        <ul class="org-list">
+          <li>Charlas para apoderados</li>
+          <li>Material descargable gratuito</li>
+          <li>Presentaciones listas para usar</li>
+          <li>Actividades interactivas</li>
+          <li>Guías para profesores</li>
+        </ul>
+        <a href="contacto.html" class="org-cta">Solicitar charla →</a>
+      </div>
+      <div class="org-crd oc3" id="familias">
+        <div class="org-icon">👨‍👩‍👧</div>
+        <div class="org-name">Familias</div>
+        <ul class="org-list">
+          <li>Guías para padres</li>
+          <li>Cómo hablar con adolescentes</li>
+          <li>Explicación de redes sociales</li>
+          <li>PDF descargables gratuitos</li>
+        </ul>
+        <a href="#" onclick="ALT.toast('📥 Descargando guía para familias...');return false;" class="org-cta">Descargar guía gratis →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="site-footer-placeholder"></div>
+<script src="js/app-core.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script>initPage({page:'nosotros.html',title:'Nosotros',description:'Conoce el equipo y la historia detrás de ALT 60/40, la plataforma de comunicación digital intergeneracional.'});</script>
+</body>
+</html>

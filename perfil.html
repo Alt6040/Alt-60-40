@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<style>
+.profile-layout{display:grid;grid-template-columns:260px 1fr;gap:28px;max-width:1100px;margin:0 auto;padding:48px 32px 80px;}
+/* ── SIDEBAR ── */
+.p-sidebar{display:flex;flex-direction:column;gap:16px;}
+.p-card{background:var(--card-bg);border:1.5px solid var(--border);border-radius:18px;padding:28px;text-align:center;}
+.p-avatar{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,var(--wine),var(--magenta));color:var(--gold);font-family:var(--fD);font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;position:relative;}
+.p-avatar-edit{position:absolute;bottom:0;right:0;width:22px;height:22px;border-radius:50%;background:var(--wine);border:2px solid var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;}
+.p-name{font-family:var(--fD);font-size:18px;font-weight:800;color:var(--wine);margin-bottom:3px;}
+.p-email{font-size:12px;color:var(--gray);margin-bottom:16px;}
+.p-level-badge{background:linear-gradient(135deg,var(--gold),#ffe27a);border-radius:10px;padding:10px 14px;margin-bottom:16px;}
+.plb-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--wine);margin-bottom:3px;}
+.plb-name{font-family:var(--fD);font-size:15px;font-weight:800;color:var(--wine);}
+.p-quick-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.pqs{background:var(--bg-soft);border-radius:10px;padding:10px 6px;text-align:center;}
+.pqs-n{font-family:var(--fD);font-size:20px;font-weight:800;color:var(--wine);}
+.pqs-l{font-size:10px;color:var(--gray);margin-top:2px;line-height:1.3;}
+.p-nav{display:flex;flex-direction:column;gap:3px;}
+.p-nav-btn{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;font-family:var(--fD);font-size:13px;font-weight:700;color:var(--text);background:transparent;border:none;cursor:pointer;text-align:left;transition:all .15s;text-decoration:none;width:100%;}
+.p-nav-btn:hover,.p-nav-btn.active{background:var(--bg-soft);color:var(--wine);}
+.p-nav-btn .nav-icon{font-size:16px;width:22px;text-align:center;}
+.p-nav-sep{height:1px;background:var(--border);margin:6px 0;}
+.p-logout{color:var(--gray)!important;}
+.p-logout:hover{color:#dc2626!important;background:#fef2f2!important;}
+.p-edit-form{background:var(--card-bg);border:1.5px solid var(--border);border-radius:18px;padding:22px;}
+.p-edit-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:14px;font-family:var(--fB);color:var(--text);background:var(--bg);outline:none;margin-bottom:10px;}
+.p-edit-input:focus{border-color:var(--wine);}
+.p-edit-save{width:100%;padding:11px;background:var(--wine);color:#fff;border:none;border-radius:9px;font-family:var(--fD);font-weight:700;font-size:13px;cursor:pointer;}
+.p-edit-save:hover{background:var(--magenta);}
+/* ── MAIN CONTENT ── */
+.p-main{display:flex;flex-direction:column;gap:20px;}
+.p-section{background:var(--card-bg);border:1.5px solid var(--border);border-radius:18px;padding:28px;}
+.ps-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px;}
+.ps-title{font-family:var(--fD);font-size:17px;font-weight:700;color:var(--wine);display:flex;align-items:center;gap:8px;}
+.ps-action{font-family:var(--fD);font-size:12px;font-weight:700;color:var(--gray);background:none;border:none;cursor:pointer;text-decoration:underline;}
+.ps-action:hover{color:var(--wine);}
+/* Stats grid */
+.stats-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.s4-item{background:var(--bg-soft);border-radius:12px;padding:18px;text-align:center;}
+.s4-num{font-family:var(--fD);font-size:28px;font-weight:800;color:var(--wine);}
+.s4-label{font-size:11px;color:var(--gray);margin-top:4px;line-height:1.3;}
+/* Progress bars */
+.prog-item{margin-bottom:18px;}
+.prog-head{display:flex;justify-content:space-between;margin-bottom:7px;}
+.prog-label{font-size:13px;font-weight:600;color:var(--text);}
+.prog-pct{font-family:var(--fD);font-size:13px;font-weight:700;color:var(--wine);}
+.prog-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--wine),var(--magenta));border-radius:4px;transition:width .8s cubic-bezier(.25,.46,.45,.94);}
+/* Favorites */
+.fav-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.fav-item{background:var(--bg-soft);border:1.5px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s;text-decoration:none;}
+.fav-item:hover{border-color:var(--wine);transform:translateY(-2px);}
+.fav-emoji{font-size:22px;flex-shrink:0;}
+.fav-word{font-family:var(--fD);font-size:13.5px;font-weight:700;color:var(--wine);}
+.fav-cat{font-size:10.5px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;}
+.fav-del{margin-left:auto;background:none;border:none;font-size:14px;cursor:pointer;opacity:.35;flex-shrink:0;transition:opacity .15s;}
+.fav-del:hover{opacity:1;}
+/* History */
+.hist-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.hist-item:last-child{border-bottom:none;}
+.hist-term{font-family:var(--fD);font-size:14px;font-weight:700;color:var(--wine);flex:1;}
+.hist-time{font-size:11px;color:var(--gray);flex-shrink:0;}
+.hist-go{font-size:12px;font-weight:700;color:var(--steel);text-decoration:none;flex-shrink:0;}
+.hist-go:hover{color:var(--wine);}
+/* Achievements */
+.ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.ach-item{border:1.5px solid var(--border);border-radius:14px;padding:18px;text-align:center;transition:all .2s;}
+.ach-item.on{border-color:var(--gold);background:linear-gradient(135deg,#fffbeb,#fef3c7);}
+html.dark .ach-item.on{background:rgba(247,203,21,.1);}
+.ach-item.off{opacity:.4;filter:grayscale(.5);}
+.ach-icon{font-size:30px;margin-bottom:8px;}
+.ach-name{font-family:var(--fD);font-size:12px;font-weight:700;color:var(--wine);margin-bottom:4px;line-height:1.3;}
+.ach-desc{font-size:11px;color:var(--gray);line-height:1.4;}
+.ach-unlocked{font-size:10px;font-weight:700;color:var(--gold-d);text-transform:uppercase;letter-spacing:1px;margin-top:6px;}
+/* Learned words */
+.learned-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.learned-chip{background:var(--bg-soft);border:1px solid var(--border);border-radius:100px;padding:7px 14px;font-family:var(--fD);font-size:12.5px;font-weight:700;color:var(--wine);text-align:center;cursor:pointer;transition:all .15s;text-decoration:none;display:block;}
+.learned-chip:hover{background:var(--wine);color:#fff;border-color:var(--wine);}
+/* Courses */
+.course-prog-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+.course-prog-item:last-child{border-bottom:none;}
+.cpi-icon{font-size:24px;flex-shrink:0;}
+.cpi-info{flex:1;min-width:0;}
+.cpi-name{font-family:var(--fD);font-size:13.5px;font-weight:700;color:var(--wine);margin-bottom:4px;}
+.cpi-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.cpi-fill{height:100%;background:linear-gradient(90deg,var(--wine),var(--magenta));border-radius:3px;transition:width .8s;}
+.cpi-pct{font-family:var(--fD);font-size:13px;font-weight:700;color:var(--wine);flex-shrink:0;width:36px;text-align:right;}
+.cpi-cert{font-size:10px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.5px;}
+/* Empty state */
+.empty-state{text-align:center;padding:40px 20px;}
+.empty-icon{font-size:44px;margin-bottom:14px;}
+.empty-title{font-family:var(--fD);font-size:15px;font-weight:700;color:var(--gray);margin-bottom:8px;}
+.empty-sub{font-size:13px;color:var(--gray);margin-bottom:18px;}
+/* Not logged in */
+.login-prompt{text-align:center;padding:60px 32px;}
+/* Responsive */
+@media(max-width:800px){
+  .profile-layout{grid-template-columns:1fr;padding:24px 16px 60px;}
+  .p-nav{flex-direction:row;flex-wrap:wrap;}
+  .p-nav-btn{flex:0;}
+  .stats-4{grid-template-columns:1fr 1fr;}
+  .ach-grid{grid-template-columns:1fr 1fr;}
+  .fav-grid{grid-template-columns:1fr;}
+  .learned-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+<div id="site-nav-placeholder"></div>
+
+<div class="profile-layout">
+  <!-- SIDEBAR -->
+  <div class="p-sidebar">
+    <div class="p-card" id="pSidebarCard">
+      <!-- filled by JS -->
+    </div>
+    <div class="p-edit-form" id="pEditForm" style="display:none;">
+      <div style="font-family:var(--fD);font-size:13px;font-weight:700;color:var(--wine);margin-bottom:12px;">✏️ Editar perfil</div>
+      <input class="p-edit-input" id="editName" placeholder="Nombre completo">
+      <input class="p-edit-input" id="editEmail" placeholder="Correo electrónico" type="email">
+      <button class="p-edit-save" onclick="saveEdit()">Guardar cambios</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="p-main" id="pMain">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<div id="site-footer-placeholder"></div>
+<script src="js/app-core.js"></script>
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<script>
+initPage({page:'perfil.html', title:'Mi Perfil', description:'Tu perfil en ALT 60/40: progreso, favoritos, logros y cursos.'});
+
+/* ── LEVEL SYSTEM ── */
+function getLevel(state) {
+  const total = state.learned.length + state.favorites.length + Object.values(state.courseProgress).filter(p=>p>=100).length*5;
+  if (total >= 30) return { name:'🏆 Experto Digital', color:'#640031' };
+  if (total >= 15) return { name:'⭐ Explorador', color:'#7698B3' };
+  if (total >= 5)  return { name:'🌱 Aprendiz', color:'#16a34a' };
+  return { name:'🆕 Recién llegado', color:'#8B9BAE' };
+}
+
+/* ── RENDER SIDEBAR ── */
+function renderSidebar() {
+  const card = document.getElementById('pSidebarCard');
+  if (!ALT.isLoggedIn()) {
+    card.innerHTML = `
+      <div class="login-prompt">
+        <div style="font-size:48px;margin-bottom:16px;">👤</div>
+        <div style="font-family:var(--fD);font-size:16px;font-weight:700;color:var(--wine);margin-bottom:8px;">Inicia sesión</div>
+        <div style="font-size:13px;color:var(--gray);margin-bottom:20px;">Para ver tu perfil, favoritos y progreso</div>
+        <button onclick="document.getElementById('loginModal').classList.add('open')" style="background:var(--wine);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-family:var(--fD);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Iniciar sesión</button>
+      </div>`;
+    return;
+  }
+  const u = ALT.state.user;
+  const lv = getLevel(ALT.state);
+  card.innerHTML = `
+    <div class="p-avatar">${u.initials}<div class="p-avatar-edit" onclick="toggleEditForm()">✏️</div></div>
+    <div class="p-name">${u.name}</div>
+    <div class="p-email">${u.email || 'Sin email'}</div>
+    <div class="p-level-badge">
+      <div class="plb-label">Nivel actual</div>
+      <div class="plb-name">${lv.name}</div>
+    </div>
+    <div class="p-quick-stats">
+      <div class="pqs"><div class="pqs-n">${ALT.state.learned.length}</div><div class="pqs-l">Palabras</div></div>
+      <div class="pqs"><div class="pqs-n">${ALT.state.favorites.length}</div><div class="pqs-l">Favoritos</div></div>
+      <div class="pqs"><div class="pqs-n">${ALT.state.achievements.length}</div><div class="pqs-l">Logros</div></div>
+      <div class="pqs"><div class="pqs-n">${Object.values(ALT.state.courseProgress).filter(p=>p>=100).length}</div><div class="pqs-l">Cursos</div></div>
+    </div>
+    <div class="p-nav">
+      <button class="p-nav-btn ${currentSection==='overview'?'active':''}" onclick="showSection('overview')"><span class="nav-icon">📊</span> Resumen</button>
+      <button class="p-nav-btn ${currentSection==='learned'?'active':''}" onclick="showSection('learned')"><span class="nav-icon">📚</span> Aprendidas</button>
+      <button class="p-nav-btn ${currentSection==='favorites'?'active':''}" onclick="showSection('favorites')"><span class="nav-icon">⭐</span> Favoritos</button>
+      <button class="p-nav-btn ${currentSection==='history'?'active':''}" onclick="showSection('history')"><span class="nav-icon">🕐</span> Historial</button>
+      <button class="p-nav-btn ${currentSection==='achievements'?'active':''}" onclick="showSection('achievements')"><span class="nav-icon">🏆</span> Logros</button>
+      <button class="p-nav-btn ${currentSection==='courses'?'active':''}" onclick="showSection('courses')"><span class="nav-icon">🎓</span> Cursos</button>
+      <div class="p-nav-sep"></div>
+      <button class="p-nav-btn p-logout" onclick="doLogout()"><span class="nav-icon">←</span> Cerrar sesión</button>
+    </div>`;
+
+  // Pre-fill edit form
+  document.getElementById('editName').value = u.name;
+  document.getElementById('editEmail').value = u.email || '';
+}
+
+function toggleEditForm() {
+  const f = document.getElementById('pEditForm');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveEdit() {
+  const name = document.getElementById('editName').value.trim();
+  const email = document.getElementById('editEmail').value.trim();
+  if (!name) { ALT.toast('⚠️ El nombre no puede estar vacío'); return; }
+  ALT.login(name, email);
+  ALT.toast('✅ Perfil actualizado');
+  document.getElementById('pEditForm').style.display = 'none';
+  renderSidebar();
+}
+
+function doLogout() {
+  ALT.logout();
+  ALT.toast('👋 Sesión cerrada');
+  renderSidebar();
+  showSection('overview');
+}
+
+/* ── SECTIONS ── */
+let currentSection = 'overview';
+
+function showSection(sec) {
+  currentSection = sec;
+  renderSidebar();
+  const main = document.getElementById('pMain');
+
+  if (!ALT.isLoggedIn()) {
+    main.innerHTML = `<div class="p-section"><div class="login-prompt">
+      <div class="empty-icon">🔒</div>
+      <div class="empty-title">Inicia sesión para ver tu perfil</div>
+      <div class="empty-sub">Guarda favoritos, lleva tu progreso y desbloquea logros.</div>
+      <button onclick="document.getElementById('loginModal').classList.add('open')" style="background:var(--wine);color:#fff;border:none;border-radius:10px;padding:12px 28px;font-family:var(--fD);font-weight:700;font-size:14px;cursor:pointer;">Iniciar sesión</button>
+    </div></div>`;
+    return;
+  }
+
+  const renders = {
+    overview:     renderOverview,
+    learned:      renderLearned,
+    favorites:    renderFavorites,
+    history:      renderHistory,
+    achievements: renderAchievements,
+    courses:      renderCourses,
+  };
+  main.innerHTML = (renders[sec] || renderOverview)();
+  animateBars();
+}
+
+/* ── OVERVIEW ── */
+function renderOverview() {
+  const learned = ALT.state.learned.length;
+  const favs = ALT.state.favorites.length;
+  const hist = ALT.state.history.length;
+  const courses = Object.values(ALT.state.courseProgress).filter(p=>p>=100).length;
+  const total = DICT.TERMS.length;
+  const lv = getLevel(ALT.state);
+
+  const recentLearned = ALT.state.learned.slice(-3).map(id => {
+    const t = DICT.TERMS.find(x=>x.id===id);
+    return t ? `<a href="diccionario.html?word=${t.id}" class="learned-chip">${t.emoji} ${t.word}</a>` : '';
+  }).filter(Boolean).join('');
+
+  const recentFavs = ALT.state.favorites.slice(-4).map(id => {
+    const t = DICT.TERMS.find(x=>x.id===id);
+    return t ? `<a href="diccionario.html?word=${t.id}" class="fav-item" style="text-decoration:none;"><span class="fav-emoji">${t.emoji}</span><div><div class="fav-word">${t.word}</div><div class="fav-cat">${t.category}</div></div></a>` : '';
+  }).filter(Boolean).join('');
+
+  return `
+  <div class="p-section">
+    <div class="ps-head"><div class="ps-title">📊 Tu progreso</div></div>
+    <div class="stats-4">
+      <div class="s4-item"><div class="s4-num">${learned}</div><div class="s4-label">Palabras aprendidas</div></div>
+      <div class="s4-item"><div class="s4-num">${favs}</div><div class="s4-label">Favoritos guardados</div></div>
+      <div class="s4-item"><div class="s4-num">${hist}</div><div class="s4-label">Búsquedas realizadas</div></div>
+      <div class="s4-item"><div class="s4-num">${courses}</div><div class="s4-label">Cursos completados</div></div>
+    </div>
+  </div>
+  <div class="p-section">
+    <div class="ps-head"><div class="ps-title">📈 Nivel de conocimiento</div></div>
+    <div class="prog-item"><div class="prog-head"><span class="prog-label">Palabras aprendidas</span><span class="prog-pct">${learned}/${total}</span></div><div class="prog-bar"><div class="prog-fill" data-w="${Math.round((learned/total)*100)}"></div></div></div>
+    <div class="prog-item"><div class="prog-head"><span class="prog-label">Favoritos (meta: 10)</span><span class="prog-pct">${Math.min(favs,10)}/10</span></div><div class="prog-bar"><div class="prog-fill" data-w="${Math.min(favs*10,100)}"></div></div></div>
+    <div class="prog-item"><div class="prog-head"><span class="prog-label">Logros desbloqueados</span><span class="prog-pct">${ALT.state.achievements.length}/${ALT.ACHIEVEMENT_DEFS.length}</span></div><div class="prog-bar"><div class="prog-fill" data-w="${Math.round((ALT.state.achievements.length/ALT.ACHIEVEMENT_DEFS.length)*100)}"></div></div></div>
+    <div style="margin-top:20px;background:var(--bg-soft);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;">
+      <div style="font-size:28px;">${lv.name.split(' ')[0]}</div>
+      <div><div style="font-family:var(--fD);font-size:13px;font-weight:700;color:var(--wine);">${lv.name}</div><div style="font-size:12px;color:var(--gray);">Sigue aprendiendo para subir de nivel</div></div>
+    </div>
+  </div>
+  ${recentLearned ? `<div class="p-section"><div class="ps-head"><div class="ps-title">📚 Últimas aprendidas</div><button class="ps-action" onclick="showSection('learned')">Ver todas →</button></div><div class="learned-grid">${recentLearned}</div></div>` : ''}
+  ${recentFavs ? `<div class="p-section"><div class="ps-head"><div class="ps-title">⭐ Favoritos recientes</div><button class="ps-action" onclick="showSection('favorites')">Ver todos →</button></div><div class="fav-grid">${recentFavs}</div></div>` : ''}
+  <div class="p-section">
+    <div class="ps-head"><div class="ps-title">🏆 Logros recientes</div><button class="ps-action" onclick="showSection('achievements')">Ver todos →</button></div>
+    ${ALT.state.achievements.length
+      ? ALT.ACHIEVEMENT_DEFS.filter(a=>ALT.state.achievements.includes(a.id)).slice(-3).map(a=>`
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:26px;">${a.icon}</span>
+            <div><div style="font-family:var(--fD);font-size:13.5px;font-weight:700;color:var(--wine);">${a.name}</div><div style="font-size:12px;color:var(--gray);">${a.desc}</div></div>
+            <span style="margin-left:auto;font-size:10px;font-weight:700;color:var(--gold-d);text-transform:uppercase;">✓</span>
+          </div>`).join('')
+      : `<div class="empty-state"><div class="empty-icon">🏆</div><div class="empty-title">Sin logros aún</div><div class="empty-sub">Empieza a aprender términos para desbloquearlos.</div><a href="diccionario.html" style="display:inline-block;background:var(--wine);color:#fff;padding:10px 22px;border-radius:9px;font-family:var(--fD);font-weight:700;font-size:13px;text-decoration:none;">Ir al diccionario</a></div>`}
+  </div>`;
+}
+
+/* ── LEARNED ── */
+function renderLearned() {
+  const ids = ALT.state.learned;
+  const terms = ids.map(id => DICT.TERMS.find(t=>t.id===id)).filter(Boolean);
+  return `<div class="p-section">
+    <div class="ps-head">
+      <div class="ps-title">📚 Palabras aprendidas (${terms.length})</div>
+      ${terms.length ? `<button class="ps-action" onclick="if(confirm('¿Borrar todas?')){ALT.state.learned=[];ALT.save();showSection('learned');}">Borrar todo</button>` : ''}
+    </div>
+    ${terms.length
+      ? `<div class="learned-grid">${terms.map(t=>`<a href="diccionario.html?word=${t.id}" class="learned-chip">${t.emoji} ${t.word}</a>`).join('')}</div>`
+      : `<div class="empty-state"><div class="empty-icon">📚</div><div class="empty-title">Aún no aprendiste ninguna palabra</div><div class="empty-sub">Ve al diccionario y marca términos como "Aprendida".</div><a href="diccionario.html" style="display:inline-block;background:var(--wine);color:#fff;padding:10px 22px;border-radius:9px;font-family:var(--fD);font-weight:700;font-size:13px;text-decoration:none;">Ir al diccionario</a></div>`}
+  </div>`;
+}
+
+/* ── FAVORITES ── */
+function renderFavorites() {
+  const terms = ALT.state.favorites.map(id => DICT.TERMS.find(t=>t.id===id)).filter(Boolean);
+  return `<div class="p-section">
+    <div class="ps-head">
+      <div class="ps-title">⭐ Mis favoritos (${terms.length})</div>
+      ${terms.length ? `<button class="ps-action" onclick="if(confirm('¿Eliminar todos los favoritos?')){ALT.state.favorites=[];ALT.save();showSection('favorites');}">Borrar todos</button>` : ''}
+    </div>
+    ${terms.length
+      ? `<div class="fav-grid">${terms.map(t=>`
+          <a class="fav-item" href="diccionario.html?word=${t.id}">
+            <span class="fav-emoji">${t.emoji}</span>
+            <div style="min-width:0;"><div class="fav-word">${t.word}</div><div class="fav-cat">${t.category}</div></div>
+            <button class="fav-del" onclick="event.preventDefault();event.stopPropagation();removeFav('${t.id}');">✕</button>
+          </a>`).join('')}</div>`
+      : `<div class="empty-state"><div class="empty-icon">⭐</div><div class="empty-title">Sin favoritos aún</div><div class="empty-sub">Guarda palabras favoritas desde el diccionario con el botón ⭐</div><a href="diccionario.html" style="display:inline-block;background:var(--wine);color:#fff;padding:10px 22px;border-radius:9px;font-family:var(--fD);font-weight:700;font-size:13px;text-decoration:none;">Ir al diccionario</a></div>`}
+  </div>`;
+}
+
+function removeFav(id) { ALT.toggleFavorite(id); ALT.toast('Eliminado de favoritos'); showSection('favorites'); }
+
+/* ── HISTORY ── */
+function renderHistory() {
+  const h = ALT.state.history;
+  return `<div class="p-section">
+    <div class="ps-head">
+      <div class="ps-title">🕐 Historial de búsquedas (${h.length})</div>
+      ${h.length ? `<button class="ps-action" onclick="ALT.state.history=[];ALT.save();showSection('history');">Borrar todo</button>` : ''}
+    </div>
+    ${h.length
+      ? h.map(item=>`<div class="hist-item">
+          <span class="hist-term">${item.term}</span>
+          <span class="hist-time">${timeAgo(item.ts)}</span>
+          <a class="hist-go" href="diccionario.html?word=${encodeURIComponent(item.term)}">Ver →</a>
+        </div>`).join('')
+      : `<div class="empty-state"><div class="empty-icon">🕐</div><div class="empty-title">Sin historial</div><div class="empty-sub">Tu historial de búsquedas aparecerá aquí automáticamente.</div></div>`}
+  </div>`;
+}
+
+function timeAgo(ts) {
+  const d = Date.now() - ts;
+  if (d < 60000) return 'ahora';
+  if (d < 3600000) return Math.floor(d/60000) + 'm';
+  if (d < 86400000) return Math.floor(d/3600000) + 'h';
+  return Math.floor(d/86400000) + 'd';
+}
+
+/* ── ACHIEVEMENTS ── */
+function renderAchievements() {
+  return `<div class="p-section">
+    <div class="ps-head"><div class="ps-title">🏆 Logros (${ALT.state.achievements.length}/${ALT.ACHIEVEMENT_DEFS.length})</div></div>
+    <div class="ach-grid">
+      ${ALT.ACHIEVEMENT_DEFS.map(a => {
+        const on = ALT.state.achievements.includes(a.id);
+        return `<div class="ach-item ${on?'on':'off'}">
+          <div class="ach-icon">${a.icon}</div>
+          <div class="ach-name">${a.name}</div>
+          <div class="ach-desc">${a.desc}</div>
+          ${on ? '<div class="ach-unlocked">✓ Desbloqueado</div>' : '<div style="font-size:10px;color:var(--gray);margin-top:6px;">🔒 Bloqueado</div>'}
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+/* ── COURSES ── */
+const COURSES_META = [
+  { id:'tiktok-101',   emoji:'🎵', name:'Introducción a TikTok',  level:'Principiante' },
+  { id:'gen-z-lang',   emoji:'💬', name:'Lenguaje Gen Z',          level:'Intermedio' },
+  { id:'ia-basics',    emoji:'🤖', name:'IA para principiantes',   level:'Avanzado' },
+  { id:'social-101',   emoji:'📱', name:'Redes Sociales 101',      level:'Principiante' },
+  { id:'memes-culture',emoji:'😂', name:'Memes y cultura visual',  level:'Intermedio' },
+  { id:'digital-safety',emoji:'🔒',name:'Seguridad Digital',       level:'Avanzado' },
+];
+
+function renderCourses() {
+  const items = COURSES_META.map(c => {
+    const prog = ALT.getCourseProgress(c.id);
+    const done = prog >= 100;
+    return `<div class="course-prog-item">
+      <div class="cpi-icon">${c.emoji}</div>
+      <div class="cpi-info">
+        <div class="cpi-name">${c.name} <span style="font-size:11px;color:var(--gray);font-weight:normal;">(${c.level})</span></div>
+        <div class="cpi-bar"><div class="cpi-fill" style="width:${prog}%"></div></div>
+        ${done ? '<div class="cpi-cert">✓ Completado</div>' : `<div style="font-size:11px;color:var(--gray);margin-top:3px;">${prog}% completado</div>`}
+      </div>
+      <div class="cpi-pct">${prog}%</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="p-section">
+    <div class="ps-head">
+      <div class="ps-title">🎓 Mis cursos</div>
+      <a href="cursos.html" class="ps-action">Ver todos →</a>
+    </div>
+    ${items}
+    <div style="margin-top:20px;text-align:center;">
+      <a href="cursos.html" style="display:inline-block;background:var(--wine);color:#fff;padding:11px 26px;border-radius:10px;font-family:var(--fD);font-weight:700;font-size:14px;text-decoration:none;">Continuar aprendiendo →</a>
+    </div>
+  </div>`;
+}
+
+function animateBars() {
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.querySelectorAll('.prog-fill[data-w]').forEach(el => { el.style.width = el.getAttribute('data-w') + '%'; });
+    }, 100);
+  });
+}
+
+/* ── INIT ── */
+renderSidebar();
+showSection('overview');
+
+// If not logged in, prompt after small delay
+if (!ALT.isLoggedIn()) {
+  setTimeout(() => { document.getElementById('loginModal').classList.add('open'); }, 500);
+}
+</script>
+</body>
+</html>
