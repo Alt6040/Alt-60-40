@@ -7,8 +7,7 @@ function injectNav(currentPage) {
     { href: 'index.html',       label: 'Inicio' },
     { href: 'diccionario.html', label: 'Diccionario' },
     { href: 'traductor.html',   label: 'Traductor IA' },
-    { href: 'tendencias.html',  label: 'Tendencias' },
-    { href: 'memes.html',       label: 'Memes' },
+    { href: 'cultura.html',     label: 'Memes & Tendencias' },
     { href: 'cursos.html',      label: 'Cursos' },
     { href: 'nosotros.html',    label: 'Nosotros' },
   ];
@@ -18,9 +17,9 @@ function injectNav(currentPage) {
   ).join('');
 
   const drawerLinks = [...pages,
-    { href: 'faq.html', label: 'FAQ' },
+    { href: 'faq.html',      label: 'FAQ' },
     { href: 'contacto.html', label: 'Contacto' },
-    { href: 'perfil.html', label: '👤 Mi perfil' },
+    { href: 'perfil.html',   label: '👤 Mi perfil' },
   ].map(p => `<a href="${p.href}">${p.label}</a>`).join('');
 
   document.getElementById('site-nav-placeholder').innerHTML = `
@@ -63,7 +62,7 @@ function injectFooter() {
           <a href="https://youtube.com" target="_blank" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="white"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.96A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--wine)"/></svg></a>
         </div>
       </div>
-      <div><div class="f-col-title">Plataforma</div><ul class="f-links"><li><a href="diccionario.html">Diccionario</a></li><li><a href="traductor.html">Traductor IA</a></li><li><a href="tendencias.html">Tendencias</a></li><li><a href="memes.html">Memes</a></li><li><a href="cursos.html">Cursos</a></li></ul></div>
+      <div><div class="f-col-title">Plataforma</div><ul class="f-links"><li><a href="diccionario.html">Diccionario</a></li><li><a href="traductor.html">Traductor IA</a></li><li><a href="cultura.html">Tendencias</a></li><li><a href="cultura.html">Memes</a></li><li><a href="cursos.html">Cursos</a></li></ul></div>
       <div><div class="f-col-title">Recursos</div><ul class="f-links"><li><a href="nosotros.html#empresas">Empresas</a></li><li><a href="nosotros.html#colegios">Colegios</a></li><li><a href="nosotros.html#familias">Familias</a></li><li><a href="cursos.html">Precios</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
       <div><div class="f-col-title">Empresa</div><ul class="f-links"><li><a href="nosotros.html">Nosotros</a></li><li><a href="faq.html">FAQ</a></li><li><a href="nosotros.html#equipo">Equipo</a></li></ul></div>
       <div><div class="f-col-title">Legal</div><ul class="f-links"><li><a href="privacidad.html">Privacidad</a></li><li><a href="terminos.html">Términos</a></li></ul></div>

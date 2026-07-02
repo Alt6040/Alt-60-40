@@ -5,7 +5,347 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/base.css">
+<style>
+/* ═══════════════════════════════════════
+   ALT 60/40 — DESIGN SYSTEM
+   ═══════════════════════════════════════ */
+:root {
+  --wine:    #640031;
+  --magenta: #7A1843;
+  --gold:    #F7CB15;
+  --steel:   #7698B3;
+  --white:   #FAFAFF;
+
+  --wine-l:  #7d0040;
+  --gold-d:  #e0b711;
+  --ink:     #2a0e1c;
+  --gray:    #8a7d85;
+  --border:  #ecdfe4;
+  --bg:      var(--white);
+  --bg-soft: #f9f5f1;
+  --card-bg: var(--white);
+  --text:    var(--ink);
+  --text-soft: #5d5159;
+
+  --fD: 'Space Grotesk', sans-serif;
+  --fB: 'Inter', sans-serif;
+  --ease: cubic-bezier(.25,.46,.45,.94);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
+/* ─── DARK MODE ─── */
+html.dark {
+  --bg:      #15090f;
+  --bg-soft: #1c0e16;
+  --card-bg: #20121a;
+  --text:    #f5eef2;
+  --text-soft: #c9b8c2;
+  --border:  #3a2030;
+  --gray:    #a594a0;
+}
+
+/* ─── HIGH CONTRAST MODE ─── */
+html.contrast {
+  --wine: #4a0024;
+  --text: #000;
+  --text-soft: #000;
+  --border: #000;
+}
+html.contrast.dark {
+  --text: #fff;
+  --text-soft: #fff;
+  --border: #fff;
+  --bg: #000;
+  --bg-soft: #000;
+  --card-bg: #0a0a0a;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+html.no-scroll{ overflow:hidden; }
+body{
+  font-family:var(--fB);
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  transition: background .25s, color .25s;
+}
+::selection { background: var(--gold); color: var(--wine); }
+a{ color:inherit; }
+img{ max-width:100%; display:block; }
+button{ font-family:inherit; }
+
+/* font-size scaling for accessibility */
+html.font-lg{ font-size:112.5%; }
+html.font-xl{ font-size:125%; }
+
+section[id], div[id]{ scroll-margin-top: 84px; }
+
+/* ─── VISIBLE FOCUS ─── */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 2.5px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* ─── REDUCED MOTION ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ═══ NAV ═══ */
+nav.site-nav{
+  position:sticky; top:0; z-index:500;
+  background:var(--wine);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 48px; height:64px;
+  border-bottom: 3px solid var(--gold);
+}
+.logo{ font-family:var(--fD); font-size:20px; font-weight:800; color:var(--white); letter-spacing:-.5px; text-decoration:none; }
+.logo b{ color:var(--gold); }
+.navlinks{ display:flex; gap:4px; align-items:center; }
+.navlinks a{
+  font-family:var(--fD); font-size:13px; font-weight:600;
+  color:rgba(250,250,255,.75); text-decoration:none;
+  padding:8px 13px; border-radius:8px; transition:all .15s;
+  white-space:nowrap;
+}
+.navlinks a:hover, .navlinks a.current{ color:var(--white); background:rgba(255,255,255,.08); }
+.nav-cta{
+  background:var(--gold); color:var(--wine) !important;
+  font-weight:700 !important; padding:9px 18px !important; margin-left:6px;
+}
+.nav-cta:hover{ background:#fff !important; }
+
+.nav-icon-btn{
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
+  width:36px; height:36px; border-radius:9px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .15s; flex-shrink:0;
+}
+.nav-icon-btn:hover{ background:rgba(255,255,255,.18); }
+.nav-icon-btn svg{ width:17px; height:17px; }
+
+.nav-right{ display:flex; align-items:center; gap:8px; }
+
+.nav-avatar-btn{
+  width:36px; height:36px; border-radius:50%;
+  background:var(--gold); color:var(--wine);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--fD); font-weight:700; font-size:13px;
+  cursor:pointer; border:none; flex-shrink:0;
+}
+
+/* hamburger (mobile only) */
+.hamburger{
+  display:none; flex-direction:column; gap:4px; cursor:pointer;
+  background:none; border:none; padding:8px; width:36px; height:36px;
+  align-items:center; justify-content:center;
+}
+.hamburger span{ width:20px; height:2px; background:var(--white); border-radius:2px; transition:all .2s; }
+.hamburger.open span:nth-child(1){ transform:translateY(6px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-6px) rotate(-45deg); }
+
+.mobile-drawer{
+  display:none; position:fixed; top:64px; left:0; right:0; bottom:0; z-index:480;
+  background:var(--wine); padding:24px; overflow-y:auto;
+}
+.mobile-drawer.open{ display:block; }
+.mobile-drawer a{
+  display:block; font-family:var(--fD); font-size:17px; font-weight:600;
+  color:var(--white); text-decoration:none; padding:14px 4px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+/* ═══ FOOTER ═══ */
+footer.site-footer{ background:var(--wine); padding:60px 48px 0; }
+.footer-grid{
+  max-width:1240px; margin:0 auto;
+  display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; gap:40px;
+  padding-bottom:40px; border-bottom:1px solid rgba(255,255,255,.1);
+}
+.f-logo{ font-family:var(--fD); font-size:20px; font-weight:800; color:var(--white); margin-bottom:14px; }
+.f-logo b{ color:var(--gold); }
+.f-desc{ font-size:13px; color:rgba(250,250,255,.55); line-height:1.7; max-width:260px; margin-bottom:18px; }
+.f-social{ display:flex; gap:10px; }
+.f-social a{
+  width:34px; height:34px; border-radius:9px; background:rgba(255,255,255,.08);
+  display:flex; align-items:center; justify-content:center; transition:background .15s;
+}
+.f-social a:hover{ background:var(--gold); }
+.f-social svg{ width:16px; height:16px; fill:var(--white); }
+.f-social a:hover svg{ fill:var(--wine); }
+.f-col-title{ font-family:var(--fD); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+.f-links{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+.f-links a{ font-size:13px; color:rgba(250,250,255,.6); text-decoration:none; transition:color .2s; }
+.f-links a:hover{ color:var(--gold); }
+.footer-bottom{
+  max-width:1240px; margin:0 auto; padding:22px 0;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+}
+.footer-bottom p{ font-size:12.5px; color:rgba(250,250,255,.45); }
+.footer-bottom-links{ display:flex; gap:18px; flex-wrap:wrap; }
+.footer-bottom-links a{ font-size:12.5px; color:rgba(250,250,255,.45); text-decoration:none; }
+.footer-bottom-links a:hover{ color:var(--gold); }
+
+/* ═══ SHARED BUTTONS ═══ */
+.btn-gold{
+  background:var(--gold); color:var(--wine);
+  font-family:var(--fD); font-weight:700; font-size:15px;
+  padding:14px 32px; border-radius:10px; border:none; cursor:pointer;
+  text-decoration:none; display:inline-block; transition:all .2s;
+  box-shadow:0 8px 28px rgba(247,203,21,.3);
+}
+.btn-gold:hover{ background:#fff; transform:translateY(-2px); box-shadow:0 12px 36px rgba(247,203,21,.4); }
+.btn-outline{
+  background:transparent; color:var(--white);
+  font-family:var(--fD); font-weight:700; font-size:15px;
+  padding:14px 32px; border-radius:10px; border:1.5px solid rgba(255,255,255,.3); cursor:pointer;
+  text-decoration:none; display:inline-block; transition:all .2s;
+}
+.btn-outline:hover{ border-color:var(--white); background:rgba(255,255,255,.08); transform:translateY(-2px); }
+.btn-wine{
+  background:var(--wine); color:#fff;
+  font-family:var(--fD); font-weight:700; font-size:14px;
+  padding:12px 26px; border-radius:9px; border:none; cursor:pointer;
+  text-decoration:none; display:inline-block; transition:all .2s;
+}
+.btn-wine:hover{ background:var(--magenta); transform:translateY(-2px); }
+.btn-ghost-wine{
+  background:transparent; color:var(--wine); border:1.5px solid var(--border);
+  font-family:var(--fD); font-weight:700; font-size:13px;
+  padding:10px 22px; border-radius:9px; cursor:pointer; transition:all .15s;
+  text-decoration:none; display:inline-block;
+}
+.btn-ghost-wine:hover{ border-color:var(--wine); background:#f5eef1; }
+
+/* ═══ SECTION BASE ═══ */
+.section{ max-width:1240px; margin:0 auto; padding:80px 48px; }
+.eyebrow{
+  font-family:var(--fD); font-size:11px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase; color:var(--magenta);
+  margin-bottom:16px;
+}
+.eyebrow.on-dark{ color:var(--gold); }
+.sec-title{
+  font-family:var(--fD); font-size:clamp(28px,4vw,46px); font-weight:800;
+  letter-spacing:-1px; line-height:1.1; color:var(--wine); margin-bottom:18px;
+}
+html.dark .sec-title{ color:var(--gold); }
+.sec-title.on-dark{ color:var(--white); }
+.sec-body{ font-size:16px; line-height:1.75; color:var(--text-soft); max-width:640px; }
+
+/* ═══ PAGE HERO (subpages) ═══ */
+.page-hero{
+  background: var(--wine);
+  background-image:
+    radial-gradient(ellipse 70% 60% at 15% 20%, rgba(122,24,67,.7) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 80%, rgba(247,203,21,.12) 0%, transparent 60%);
+  padding:64px 48px; text-align:center;
+}
+.page-hero-eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(247,203,21,.15); border:1px solid rgba(247,203,21,.35);
+  color:var(--gold); font-family:var(--fD); font-size:12px; font-weight:700;
+  letter-spacing:1.5px; text-transform:uppercase;
+  padding:7px 16px; border-radius:100px; margin-bottom:20px;
+}
+.page-hero-title{
+  font-family:var(--fD); font-weight:800;
+  font-size:clamp(30px,5vw,52px); color:var(--white);
+  line-height:1.08; letter-spacing:-1.5px;
+}
+.page-hero-sub{
+  font-size:16px; color:rgba(250,250,255,.78);
+  max-width:560px; margin:18px auto 0; line-height:1.7; font-weight:300;
+}
+
+/* ═══ REVEAL ═══ */
+.reveal{ opacity:0; transform:translateY(28px); transition:opacity .65s var(--ease), transform .65s var(--ease); }
+.reveal.visible{ opacity:1; transform:none; }
+
+/* ═══ TOAST ═══ */
+#toast-host{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:8px; align-items:center; }
+.toast{
+  background:var(--wine); color:#fff; font-family:var(--fB); font-size:13.5px; font-weight:500;
+  padding:12px 22px; border-radius:100px; box-shadow:0 10px 30px rgba(0,0,0,.25);
+  display:flex; align-items:center; gap:8px;
+  animation: toastIn .25s var(--ease);
+}
+@keyframes toastIn{ from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:none;} }
+
+/* ═══ MODAL BASE ═══ */
+.modal-overlay{
+  display:none; position:fixed; inset:0; background:rgba(20,5,12,.6);
+  z-index:2000; align-items:center; justify-content:center; padding:20px;
+  backdrop-filter: blur(3px);
+}
+.modal-overlay.open{ display:flex; }
+.modal-box{
+  background:var(--card-bg); border-radius:var(--radius-lg);
+  width:min(420px,100%); padding:36px; position:relative;
+  max-height:90vh; overflow-y:auto;
+  animation: modalIn .25s var(--ease);
+}
+@keyframes modalIn{ from{opacity:0;transform:scale(.96) translateY(8px);} to{opacity:1;transform:none;} }
+.modal-close{
+  position:absolute; top:18px; right:18px; background:none; border:none;
+  font-size:22px; color:var(--gray); cursor:pointer; line-height:1; padding:4px;
+}
+.modal-close:hover{ color:var(--wine); }
+
+/* ═══ A11Y WIDGET ═══ */
+#a11y-toggle{
+  position:fixed; bottom:24px; right:24px; z-index:1000;
+  width:50px; height:50px; border-radius:50%;
+  background:var(--wine); border:2px solid var(--gold); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 8px 24px rgba(0,0,0,.25); transition:transform .2s;
+}
+#a11y-toggle:hover{ transform:scale(1.08); }
+#a11y-toggle svg{ width:22px; height:22px; fill:var(--gold); }
+
+#a11y-panel{
+  display:none; position:fixed; bottom:84px; right:24px; z-index:1000;
+  background:var(--card-bg); border:1.5px solid var(--border); border-radius:16px;
+  padding:20px; width:240px; box-shadow:0 16px 48px rgba(0,0,0,.2);
+}
+#a11y-panel.open{ display:block; }
+.a11y-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); }
+.a11y-row:last-child{ border-bottom:none; }
+.a11y-label{ font-size:13px; font-weight:600; color:var(--text); }
+.a11y-btns{ display:flex; gap:4px; }
+.a11y-mini-btn{
+  width:28px; height:28px; border-radius:6px; border:1.5px solid var(--border);
+  background:var(--bg); color:var(--text); cursor:pointer; font-size:12px; font-weight:700;
+}
+.a11y-mini-btn.active{ background:var(--wine); color:#fff; border-color:var(--wine); }
+.a11y-toggle-switch{
+  width:38px; height:22px; border-radius:100px; background:var(--border); position:relative; cursor:pointer; border:none;
+}
+.a11y-toggle-switch::after{
+  content:''; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%;
+  background:#fff; transition:transform .2s;
+}
+.a11y-toggle-switch.on{ background:var(--wine); }
+.a11y-toggle-switch.on::after{ transform:translateX(16px); }
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1000px){
+  nav.site-nav{ padding:0 20px; }
+  .navlinks{ display:none; }
+  .hamburger{ display:flex; }
+  .section{ padding:56px 20px; }
+  .page-hero{ padding:48px 20px; }
+  .footer-grid{ grid-template-columns:1fr 1fr; padding:0 20px 32px; }
+  footer.site-footer{ padding:40px 0 0; }
+  .footer-bottom{ padding:20px; flex-direction:column; text-align:center; }
+}
+
+</style>
 <style>
 .about-section{max-width:1100px;margin:0 auto;padding:64px 48px;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-bottom:80px;}
@@ -93,11 +433,11 @@ html.dark .big-quote{color:var(--gold);}
     <h2 class="sec-title">Quiénes somos</h2>
     <div class="team-grid">
       <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--wine),var(--magenta));">👩‍💼</div><div class="team-name">Alexander</div><div class="team-role">CEO — Chief Executive Officer</div></div>
-      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--steel),#4f7186);">👩‍💻</div><div class="team-name">Matilda</div><div class="team-role">CTO — Chief Technology Officer</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--steel),#4f7186);">👩‍💻</div><div class="team-name">Matilde</div><div class="team-role">CTO — Chief Technology Officer</div></div>
       <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--gold),#e0b711);">👩‍🎨</div><div class="team-name">Octavia</div><div class="team-role">CCO — Chief Content Officer</div></div>
       <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--magenta),#9b2c5e);">👩‍💼</div><div class="team-name">Trinidad</div><div class="team-role">COO — Chief Operating Officer</div></div>
       <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#0f3460,var(--steel));">👨‍📣</div><div class="team-name">Joaquín</div><div class="team-role">CMO — Chief Marketing Officer</div></div>
-      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#15803d,#166534);">👩‍💰</div><div class="team-name">Tere</div><div class="team-role">CFO — Chief Financial Officer</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#15803d,#166534);">👩‍💰</div><div class="team-name">Teresita</div><div class="team-role">CFO — Chief Financial Officer</div></div>
     </div>
   </div>
 
@@ -146,9 +486,1186 @@ html.dark .big-quote{color:var(--gold);}
 </div>
 
 <div id="site-footer-placeholder"></div>
-<script src="js/app-core.js"></script>
-<script src="js/data.js"></script>
-<script src="js/components.js"></script>
+<script>
+/* ═══════════════════════════════════════
+   ALT 60/40 — APP CORE (shared state & utils)
+   Persisted via localStorage. No real backend —
+   this simulates auth/progress for the prototype.
+   ═══════════════════════════════════════ */
+
+const ALT = {
+  STORE_KEY: 'alt6040_state',
+
+  defaultState() {
+    return {
+      user: null, // { name, email, initials }
+      favorites: [],        // array of term ids
+      history: [],          // array of {term, ts}
+      learned: [],          // array of term ids marked "aprendida"
+      courseProgress: {},   // { courseId: percent }
+      achievements: [],     // array of achievement ids unlocked
+      darkMode: false,
+      fontSize: 'base',     // base | lg | xl
+      highContrast: false,
+    };
+  },
+
+  state: null,
+
+  load() {
+    try {
+      const raw = localStorage.getItem(this.STORE_KEY);
+      this.state = raw ? Object.assign(this.defaultState(), JSON.parse(raw)) : this.defaultState();
+    } catch(e) {
+      this.state = this.defaultState();
+    }
+    return this.state;
+  },
+
+  save() {
+    localStorage.setItem(this.STORE_KEY, JSON.stringify(this.state));
+  },
+
+  /* ── AUTH (simulated) ── */
+  login(name, email) {
+    const initials = name.trim().split(/\s+/).map(w => w[0]).slice(0,2).join('').toUpperCase();
+    this.state.user = { name: name.trim(), email: email.trim(), initials: initials || 'U' };
+    this.save();
+  },
+  loginWithGoogle() {
+    this.login('Usuario Google', 'usuario@gmail.com');
+  },
+  logout() {
+    this.state.user = null;
+    this.save();
+  },
+  isLoggedIn() { return !!this.state.user; },
+
+  /* ── FAVORITES ── */
+  toggleFavorite(termId) {
+    const i = this.state.favorites.indexOf(termId);
+    if (i >= 0) { this.state.favorites.splice(i,1); } else { this.state.favorites.push(termId); }
+    this.save();
+    return this.state.favorites.includes(termId);
+  },
+  isFavorite(termId) { return this.state.favorites.includes(termId); },
+
+  /* ── HISTORY ── */
+  addHistory(termLabel) {
+    this.state.history = this.state.history.filter(h => h.term !== termLabel);
+    this.state.history.unshift({ term: termLabel, ts: Date.now() });
+    this.state.history = this.state.history.slice(0, 20);
+    this.save();
+  },
+
+  /* ── LEARNED WORDS ── */
+  markLearned(termId) {
+    if (!this.state.learned.includes(termId)) {
+      this.state.learned.push(termId);
+      this.save();
+      this.checkAchievements();
+    }
+  },
+
+  /* ── COURSE PROGRESS ── */
+  setCourseProgress(courseId, percent) {
+    this.state.courseProgress[courseId] = percent;
+    this.save();
+    this.checkAchievements();
+  },
+  getCourseProgress(courseId) { return this.state.courseProgress[courseId] || 0; },
+
+  /* ── ACHIEVEMENTS ── */
+  ACHIEVEMENT_DEFS: [
+    { id: 'first_word',  name: 'Primer meme aprendido', desc: 'Aprendiste tu primera palabra', icon: '🎉', check: s => s.learned.length >= 1 },
+    { id: 'hundred',     name: '100 términos descubiertos', desc: 'Marcaste 100 palabras como aprendidas', icon: '💯', check: s => s.learned.length >= 100 },
+    { id: 'expert',      name: 'Nivel Experto', desc: 'Completaste un curso avanzado', icon: '🎓', check: s => Object.values(s.courseProgress).some(p => p >= 100) },
+    { id: 'streak',      name: 'Racha de aprendizaje', desc: 'Visitaste el diccionario 3 veces', icon: '🔥', check: s => s.history.length >= 3 },
+    { id: 'collector',   name: 'Coleccionista', desc: 'Guardaste 5 palabras favoritas', icon: '⭐', check: s => s.favorites.length >= 5 },
+  ],
+
+  checkAchievements() {
+    let unlocked = false;
+    this.ACHIEVEMENT_DEFS.forEach(def => {
+      if (!this.state.achievements.includes(def.id) && def.check(this.state)) {
+        this.state.achievements.push(def.id);
+        unlocked = true;
+        this.toast(`🏆 Logro desbloqueado: ${def.name}`);
+      }
+    });
+    if (unlocked) this.save();
+  },
+
+  /* ── DARK MODE ── */
+  applyDarkMode() {
+    document.documentElement.classList.toggle('dark', this.state.darkMode);
+  },
+  toggleDarkMode() {
+    this.state.darkMode = !this.state.darkMode;
+    this.applyDarkMode();
+    this.save();
+  },
+
+  /* ── ACCESSIBILITY ── */
+  applyA11y() {
+    document.documentElement.classList.remove('font-lg','font-xl');
+    if (this.state.fontSize === 'lg') document.documentElement.classList.add('font-lg');
+    if (this.state.fontSize === 'xl') document.documentElement.classList.add('font-xl');
+    document.documentElement.classList.toggle('contrast', this.state.highContrast);
+  },
+  setFontSize(size) {
+    this.state.fontSize = size;
+    this.applyA11y();
+    this.save();
+  },
+  toggleContrast() {
+    this.state.highContrast = !this.state.highContrast;
+    this.applyA11y();
+    this.save();
+  },
+  readPageAloud() {
+    if (!('speechSynthesis' in window)) { this.toast('Lectura en voz alta no disponible en este navegador'); return; }
+    const main = document.querySelector('main') || document.body;
+    const text = main.innerText.slice(0, 4000);
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'es-ES';
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utter);
+    this.toast('🔊 Leyendo página en voz alta...');
+  },
+  stopReading() {
+    speechSynthesis.cancel();
+  },
+
+  /* ── TOAST ── */
+  toast(msg, ms=3200) {
+    let host = document.getElementById('toast-host');
+    if (!host) {
+      host = document.createElement('div');
+      host.id = 'toast-host';
+      document.body.appendChild(host);
+    }
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    host.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(), 300); }, ms);
+  },
+
+  /* ── COPY TO CLIPBOARD ── */
+  copyText(text, successMsg='Copiado al portapapeles') {
+    navigator.clipboard.writeText(text).then(() => this.toast('✅ ' + successMsg)).catch(() => this.toast('No se pudo copiar'));
+  },
+
+  /* ── SHARE ── */
+  shareContent(title, text, url) {
+    if (navigator.share) {
+      navigator.share({ title, text, url }).catch(()=>{});
+    } else {
+      this.copyText(url || window.location.href, 'Enlace copiado para compartir');
+    }
+  },
+
+  init() {
+    this.load();
+    this.applyDarkMode();
+    this.applyA11y();
+    this.renderNavAuthState();
+    this.checkAchievements();
+  },
+
+  /* update header avatar/login button based on auth state across pages */
+  renderNavAuthState() {
+    const loginBtn = document.getElementById('navLoginBtn');
+    const avatarBtn = document.getElementById('navAvatarBtn');
+    if (!loginBtn && !avatarBtn) return;
+    if (this.isLoggedIn()) {
+      if (loginBtn) loginBtn.style.display = 'none';
+      if (avatarBtn) { avatarBtn.style.display = 'flex'; avatarBtn.textContent = this.state.user.initials; }
+    } else {
+      if (loginBtn) loginBtn.style.display = 'inline-block';
+      if (avatarBtn) avatarBtn.style.display = 'none';
+    }
+  }
+};
+
+ALT.load();
+ALT.applyDarkMode();
+ALT.applyA11y();
+
+document.addEventListener('DOMContentLoaded', () => {
+  ALT.init();
+
+  /* ── mobile hamburger ── */
+  const hamburger = document.getElementById('hamburgerBtn');
+  const drawer = document.getElementById('mobileDrawer');
+  if (hamburger && drawer) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      drawer.classList.toggle('open');
+      document.documentElement.classList.toggle('no-scroll', drawer.classList.contains('open'));
+    });
+    drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      drawer.classList.remove('open');
+      document.documentElement.classList.remove('no-scroll');
+    }));
+  }
+
+  /* ── dark mode toggle button ── */
+  document.querySelectorAll('[data-dark-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => ALT.toggleDarkMode());
+  });
+
+  /* ── a11y panel ── */
+  const a11yToggle = document.getElementById('a11y-toggle');
+  const a11yPanel = document.getElementById('a11y-panel');
+  if (a11yToggle && a11yPanel) {
+    a11yToggle.addEventListener('click', () => a11yPanel.classList.toggle('open'));
+    document.addEventListener('click', (e) => {
+      if (!a11yPanel.contains(e.target) && !a11yToggle.contains(e.target)) a11yPanel.classList.remove('open');
+    });
+  }
+
+  /* ── login modal wiring ── */
+  const loginBtn = document.getElementById('navLoginBtn');
+  const loginModal = document.getElementById('loginModal');
+  if (loginBtn && loginModal) {
+    loginBtn.addEventListener('click', () => loginModal.classList.add('open'));
+  }
+
+  /* ── avatar click -> go to profile ── */
+  const avatarBtn = document.getElementById('navAvatarBtn');
+  if (avatarBtn) {
+    avatarBtn.addEventListener('click', () => { window.location.href = 'perfil.html'; });
+  }
+
+  /* ── scroll reveal (works across pages) ── */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: .08 });
+  document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+});
+
+</script>
+<script>
+/* ════════════════════════════════════════════════════════
+   ALT 60/40 — DATA COMPLETA
+   Multi-generacional · Actualizado julio 2026
+   Gen Alpha · Gen Z · Millennials · Gen X · Boomers
+   ════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────────────────
+   DICCIONARIO — 55 términos con ejemplos expandidos
+   ────────────────────────────────────────────────────── */
+const TERMS = [
+
+  /* ═══ GEN ALPHA (2013+) ═══ */
+  {
+    id:'skibidi', word:'Skibidi', pron:'/ski-bi-di/', category:'memes', generation:'Gen Alpha',
+    tags:['Gen Alpha','2023','Viral'], date:'~2023', popularity:97, emoji:'🚽',
+    definition:'Originado en la serie viral "Skibidi Toilet" de YouTube (cabezas humanas en inodoros en guerra). Funciona como palabra comodín: algo absurdo, raro, random o sin sentido. Es el idioma nativo de Gen Alpha.',
+    example:'"Eso fue completamente skibidi, no tiene sentido pero me reí 10 minutos."',
+    example2:'"¿Por qué estás siendo tan skibidi hoy? Nada de lo que dices tiene lógica."',
+    example3:'"Ese video de YouTube es puro skibidi Ohio, no puedo creer que alguien lo hizo."',
+    synonyms:['Random','Absurdo','Sin sentido'], related:['brainrot','gyat'],
+    platforms:['YouTube','TikTok'], formalTranslation:'Algo absurdo o sin sentido aparente'
+  },
+  {
+    id:'gyat', word:'Gyat', pron:'/yat/', category:'slang', generation:'Gen Alpha',
+    tags:['Gen Alpha','2022'], date:'~2022', popularity:78, emoji:'😱',
+    definition:'Interjección de asombro exagerado. Viene de "goddamn" pronunciado rapidísimo. Se usa para reaccionar ante algo impactante, sorprendente o impresionante.',
+    example:'"¡Gyat! No puedo creer que sacó 7 sin ir a clases en todo el semestre."',
+    example2:'"Gyat bro, ese precio estaba en oferta hace una hora y ya se acabó."',
+    example3:'"¡GYAT! Mira quién llegó a la fiesta — no lo invitamos."',
+    synonyms:['¡Dios mío!','¡Wow!','¡Increíble!'], related:['skibidi','brainrot'],
+    platforms:['TikTok'], formalTranslation:'Expresión de asombro o sorpresa intensa ante algo inesperado'
+  },
+  {
+    id:'brainrot', word:'Brainrot', pron:'/bréin-rot/', category:'memes', generation:'Gen Alpha / Gen Z',
+    tags:['Gen Alpha','Gen Z','2023','Popular'], date:'~2023', popularity:94, emoji:'🧠',
+    definition:'Contenido absurdo, repetitivo y sin valor que "pudre el cerebro" de tanto verlo. Se usa con humor para autocriticarse. Si entiendes todos los memes de Skibidi Toilet, ya tienes brainrot.',
+    example:'"Llevo 4 horas viendo TikTok a las 3am. Esto es puro brainrot y no me arrepiento."',
+    example2:'"Mi recomendado de YouTube es solo videos de gatos y conspiraciones. Tengo brainrot severo."',
+    example3:'"Las cosas que me dan risa ya no tienen sentido para nadie más. Brainrot nivel experto."',
+    synonyms:['Contenido basura','Adicción digital'], related:['skibidi','npc'],
+    platforms:['YouTube','TikTok'], formalTranslation:'Deterioro cognitivo humorístico por consumo excesivo de contenido banal'
+  },
+
+  /* ═══ GEN Z (1997-2012) ═══ */
+  {
+    id:'rizz', word:'Rizz', pron:'/riz/', category:'slang', generation:'Gen Z',
+    tags:['Gen Z','2022','Viral','Oxford 2023'], date:'~2022', popularity:99, emoji:'✨',
+    definition:'Carisma natural para seducir o impresionar sin aparente esfuerzo. Palabra del Año Oxford 2023. "Unspoken rizz" es el nivel supremo: conquistas sin decir ni una sola palabra. Puedes "tener rizz" o "no tener rizz".',
+    example:'"No hace nada especial y todos lo adoran — tiene un unspoken rizz impresionante."',
+    example2:'"Intenté hablarle y lo arruiné todo. Definitivamente no tengo rizz."',
+    example3:'"¿Cómo te fue con ella?" "Mal, perdí todo el rizz cuando me trabé diciendo mi nombre."',
+    synonyms:['Carisma','Encanto natural','Don de gentes'], related:['aura','sigma','delulu'],
+    platforms:['TikTok','Instagram','X'], formalTranslation:'Carisma natural para generar atracción sin esfuerzo visible'
+  },
+  {
+    id:'aura', word:'Aura', pron:'/áu-ra/', category:'slang', generation:'Gen Alpha / Gen Z',
+    tags:['Gen Alpha','Gen Z','2023','Viral'], date:'~2023', popularity:95, emoji:'🌟',
+    definition:'Energía o presencia carismática que proyecta una persona. "Farmar aura" (2025-2026) es acumular puntos de carisma haciendo cosas geniales. "Perder aura" es hacer algo vergonzoso. El sistema de puntos lo decide la comunidad.',
+    example:'"Perdió 1000 puntos de aura cuando se cayó entrando al salón con todos mirando."',
+    example2:'"Llegó al trabajo con café, look impecable y el proyecto listo: +5000 aura pura."',
+    example3:'"Contesté mal en clase cuando no sabía la respuesta. Aura en negativo, literalmente."',
+    synonyms:['Presencia','Carisma','Energía'], related:['rizz','sigma'],
+    platforms:['TikTok','Instagram'], formalTranslation:'Presencia carismática que proyecta una persona en su entorno'
+  },
+  {
+    id:'delulu', word:'Delulu', pron:'/de-lu-lu/', category:'slang', generation:'Gen Z',
+    tags:['Gen Z','TikTok','2023','Popular'], date:'~2023', popularity:88, emoji:'🌙',
+    definition:'Diminutivo de "delusional" (delirante). Se usa con humor y cariño para describir expectativas poco realistas, especialmente en lo amoroso. "Ser delulu" es un estado de vida que muchos abrazan conscientemente.',
+    example:'"Estoy completamente delulu pensando que me va a escribir después de 3 semanas de silencio."',
+    example2:'"Sé que no me conoce en persona, pero en mi cabeza ya tenemos 3 hijos. Soy muy delulu."',
+    example3:'"¿Delulu? Sí. ¿Voy a parar? No. Manifestar es parte del proceso."',
+    synonyms:['Ilusa/o','Con esperanzas exageradas'], related:['main-character','rizz'],
+    platforms:['TikTok','Instagram'], formalTranslation:'Tener expectativas poco realistas sobre una situación romántica'
+  },
+  {
+    id:'era', word:'Era', pron:'/é-ra/', category:'slang', generation:'Gen Z',
+    tags:['Gen Z','2023','Popular'], date:'~2023', popularity:93, emoji:'⭐',
+    definition:'Estar en una "era" es vivir una etapa de vida con identidad definida. Inspirado en las eras de Taylor Swift. En 2026 todo se convierte en una era: gym, paz mental, villana, productividad.',
+    example:'"Estoy en mi era de no contestar mensajes y priorizar mi paz interior."',
+    example2:'"Oficialmente entré a mi era de gym. Llevo 3 días. Esperemos que dure."',
+    example3:'"Esta es mi era villana: nada de disculpas, nada de explicaciones."',
+    synonyms:['Fase','Etapa','Período'], related:['delulu','main-character'],
+    platforms:['TikTok','Instagram','X'], formalTranslation:'Atravesando una etapa de vida con identidad y propósito definidos'
+  },
+  {
+    id:'the-ick', word:'The ick', pron:'/de-ik/', category:'slang', generation:'Gen Z',
+    tags:['Gen Z','2022','Popular'], date:'~2022', popularity:89, emoji:'🤢',
+    definition:'Repulsión instantánea e irreversible que surge al ver algo que hace la persona que te gusta. No tiene cura conocida. Una vez que da "the ick", la atracción se fue para siempre.',
+    example:'"Me dio el ick cuando lo vi corriendo raro detrás del bus. Ya no puedo verlo igual."',
+    example2:'"¿Sabes qué me dio el ick? Que manda voz en vez de texto. No lo puedo superar."',
+    example3:'"The ick más raro: tomaba el yogur y hacía ruido al final. Adiós para siempre."',
+    synonyms:['Repulsión','Me bajó','Ya no me gusta'], related:['delulu','ghostear'],
+    platforms:['TikTok','Instagram'], formalTranslation:'Repulsión súbita e irreversible hacia alguien que antes atraía'
+  },
+  {
+    id:'no-cap', word:'No cap', pron:'/no-kap/', category:'slang', generation:'Gen Z',
+    tags:['Gen Z','2019','Popular'], date:'~2019', popularity:91, emoji:'🧢',
+    definition:'"Sin mentira" / "en serio". "Cap" significa mentira en slang. "No cap" = te lo juro, es verdad. Una de las expresiones más usadas para dar énfasis a una afirmación.',
+    example:'"Este restaurante es el mejor que fui en mi vida, no cap."',
+    example2:'"No cap, el examen estuvo facilísimo. Todos lo reprobaron pero estuvo fácil."',
+    example3:'"¿Esto está bueno de verdad o lo dices?" "No cap, te lo juro, está increíble."',
+    synonyms:['En serio','Te lo juro','Facts'], related:['lowkey','bussin'],
+    platforms:['TikTok','Instagram','X'], formalTranslation:'Te lo aseguro, es completamente cierto y sin exageración'
+  },
+  {
+    id:'slay', word:'Slay', pron:'/sléi/', category:'slang', generation:'Gen Z',
+    tags:['Gen Z','2019'], date:'~2019 (cultura ballroom)', popularity:86, emoji:'💅',
+    definition:'Elogio máximo: alguien lo hizo de manera excepcional. Viene de la cultura ballroom afroamericana de los 80s, masificado por RuPaul\'s Drag Race. "Slay queen" es la forma de decírselo a alguien.',
+    example:'"Ese look es un slay absoluto, deberías ir así siempre."',
+    example2:'"Presentó el proyecto con tanta confianza. Slay total, todos aplaudieron."',
+    example3:'"¿Cómo me veo?" "Slay. Literal slay. No cambies nada."',
+    synonyms:['Lo rompiste','Lo clavaste','Impresionante'], related:['aura','rizz'],
+    platforms:['Instagram','TikTok','X'], formalTranslation:'Hiciste algo de manera excepcional y con gran estilo'
+  },
+  {
+    id:'caught-4k', word:'Caught in 4K', pron:'/kot in ful-kei/', category:'slang', generation:'Gen Z',
+    tags:['Gen Z','2020','Viral'], date:'~2020', popularity:85, emoji:'📸',
+    definition:'Ser pillado haciendo algo con evidencia irrefutable. La cultura del celular hizo que todo quede grabado. No hay escapatoria posible.',
+    example:'"Te vieron comprando McDonald\'s con la dieta activa. Caught in 4K."',
+    example2:'"Le dijo a todos que estaba enfermo y lo pillaron en el partido. Caught in 4K brutal."',
+    example3:'"Me grabaron durmiendo en clases y lo subieron al grupo. Caught in 4K sin compasión."',
+    synonyms:['Pillado','En evidencia','Sin coartada'], related:['ratio','no-cap'],
+    platforms:['TikTok','Instagram','X'], formalTranslation:'Ser descubierto en flagrante con evidencia irrefutable'
+  },
+  {
+    id:'understood-assignment', word:'Understood the assignment', pron:'/an-dér-stud de a-sáin-ment/', category:'slang', generation:'Gen Z',
+    tags:['Gen Z','2021','Viral'], date:'~2021', popularity:84, emoji:'📋',
+    definition:'Elogio máximo: alguien entendió exactamente qué se esperaba y lo hizo de manera impecable. Si te lo dicen, lo hiciste perfecto.',
+    example:'"Llegó al evento con el look exacto — clearly understood the assignment."',
+    example2:'"Le pedí que trajera algo para la reunión y llegó con presentación, aperitivos y resumen. Entendió el assignment completamente."',
+    example3:'"El chef nuevo understood the assignment: menú perfecto, presentación perfecta, precio razonable."',
+    synonyms:['Lo entendió','Lo clavó'], related:['slay','rizz'],
+    platforms:['TikTok','Instagram','X'], formalTranslation:'Cumplió exactamente con lo esperado, de manera sobresaliente'
+  },
+  {
+    id:'rent-free', word:'Rent free', pron:'/rent-frí/', category:'slang', generation:'Gen Z / Millennials',
+    tags:['Gen Z','Millennials','2020'], date:'~2020', popularity:76, emoji:'🏠',
+    definition:'Cuando algo o alguien ocupa tu mente constantemente sin que puedas evitarlo. "Vive en tu cabeza sin pagar arriendo." Puede ser una canción, una persona, un momento vergonzoso.',
+    example:'"Esa canción vive en mi cabeza rent free desde hace tres semanas."',
+    example2:'"El comentario que me hizo hace un mes sigue viviendo rent free en mi cabeza a las 3am."',
+    example3:'"Él no piensa en mí pero yo lo tengo rent free 24/7. Clásico."',
+    synonyms:['No puedo dejar de pensar','Me obsesioné'], related:['delulu','main-character'],
+    platforms:['X','TikTok'], formalTranslation:'Algo que ocupa tu mente constantemente de forma involuntaria'
+  },
+  {
+    id:'pov', word:'POV', pron:'/pi-ou-vi/', category:'tiktok', generation:'Gen Z',
+    tags:['Gen Z','TikTok','2020'], date:'~2020', popularity:95, emoji:'📹',
+    definition:'"Point of View". Formato de video/texto donde el espectador es el protagonista de la situación. "POV: tu mamá te llama" te pone a ti dentro de la escena.',
+    example:'"POV: llevas 6 horas jugando y tu mamá acaba de cortar el internet."',
+    example2:'"POV: eres el único que estudió para el examen y el profe lo suspendió."',
+    example3:'"POV: tu jefe te llama el viernes a las 5:59pm."',
+    synonyms:['Perspectiva','Punto de vista'], related:['main-character','npc'],
+    platforms:['TikTok','Instagram'], formalTranslation:'Desde la perspectiva del protagonista de la situación descrita'
+  },
+  {
+    id:'npc', word:'NPC', pron:'/en-pi-si/', category:'gaming', generation:'Gen Z / Millennials',
+    tags:['Gen Z','Gaming','2022'], date:'~2022', popularity:80, emoji:'🤖',
+    definition:'"Non-Playable Character": personaje sin criterio propio de videojuego. Alguien que actúa sin pensar, sigue a la masa y repite lo mismo sin originalidad.',
+    example:'"Deja de actuar como NPC y da tu propia opinión por una vez."',
+    example2:'"Todos en esa reunión eran NPCs: nadie preguntó nada, nadie dijo nada, todos asintieron."',
+    example3:'"¿Votó porque le dijeron que votara?" "NPC máximo. No sabe ni por qué."',
+    synonyms:['Robot','Autómata','Sin criterio'], related:['brainrot','sigma'],
+    platforms:['X','TikTok','Reddit'], formalTranslation:'Persona que actúa mecánicamente sin pensamiento crítico propio'
+  },
+  {
+    id:'sigma', word:'Sigma', pron:'/sig-ma/', category:'memes', generation:'Gen Alpha / Gen Z',
+    tags:['Gen Alpha','Gen Z','2021'], date:'~2021', popularity:90, emoji:'🐺',
+    definition:'Alguien independiente que no busca aprobación social. Trabaja en silencio, obtiene resultados. El "sigma grindset" popularizó el concepto como meme motivacional, primero irónico y luego adoptado en serio.',
+    example:'"Ese tipo es muy sigma: nunca sube nada a redes pero siempre está logrando cosas."',
+    example2:'"Sigma move: se fue antes que terminara la reunión porque ya había dado su aporte."',
+    example3:'"No necesita que nadie sepa lo que hace. Puro sigma."',
+    synonyms:['Independiente','Lobo solitario'], related:['rizz','aura'],
+    platforms:['YouTube','TikTok','Reddit'], formalTranslation:'Persona independiente que opera sin buscar validación social'
+  },
+  {
+    id:'mid', word:'Mid', pron:'/mid/', category:'slang', generation:'Gen Z',
+    tags:['Gen Z','2021'], date:'~2021', popularity:75, emoji:'😐',
+    definition:'Mediocre. Del montón. No es un insulto grave pero es definitivo: sin nada especial, exactamente en el medio.',
+    example:'"La película nueva estuvo mid, no la recomendaría pero tampoco diría que es mala."',
+    example2:'"Probé el restaurante que tanto recomendaban. Estuvo mid. Decepcionante con esa expectativa."',
+    example3:'"¿Cómo estuvo el concierto?" "Mid. Llegó tarde, cantó poca música nueva y se fue rápido."',
+    synonyms:['Mediocre','Normalito','Del montón'], related:['cringe','ratio'],
+    platforms:['X','TikTok'], formalTranslation:'De calidad mediocre, sin aspectos positivos ni negativos destacables'
+  },
+  {
+    id:'cringe', word:'Cringe', pron:'/krinch/', category:'slang', generation:'Millennials / Gen Z',
+    tags:['Gen Z','Millennials','2015'], date:'~2015', popularity:88, emoji:'😬',
+    definition:'Algo que produce vergüenza ajena intensa. El equivalente moderno de "qué pena ajena". Puede ser una situación, persona, contenido o comportamiento.',
+    example:'"Vi el video donde intentó bailar en la reunión de trabajo. Tan cringe que cerré la app."',
+    example2:'"Ese comentario en Instagram fue el cringe más grande del año."',
+    example3:'"Releer mis mensajes de hace 5 años es puro cringe. ¿Por qué era así?"',
+    synonyms:['Vergüenza ajena','Incómodo','Bochornoso'], related:['mid','ratio'],
+    platforms:['YouTube','X','Reddit'], formalTranslation:'Algo que provoca vergüenza ajena o incomodidad intensa al observarlo'
+  },
+  {
+    id:'ghostear', word:'Ghostear', pron:'/gos-te-ar/', category:'slang', generation:'Gen Z / Millennials',
+    tags:['Gen Z','Millennials','2019'], date:'~2019', popularity:85, emoji:'👻',
+    definition:'Desaparecer sin explicación. Dejar de responder mensajes abruptamente como si te convirtieras en un fantasma. Muy común en citas y amistades digitales.',
+    example:'"Me ghosteó después de tres semanas hablando todos los días. Sin una sola palabra."',
+    example2:'"Le mandé 5 mensajes en 3 días. Me ghosteó con clase. Ni visto le dio."',
+    example3:'"Ghosteé a alguien una vez y todavía me siento culpable años después."',
+    synonyms:['Desaparecer','Dejar en visto'], related:['the-ick','lowkey'],
+    platforms:['WhatsApp','Instagram','Tinder'], formalTranslation:'Cesar toda comunicación con alguien sin dar ninguna explicación'
+  },
+  {
+    id:'lowkey', word:'Lowkey', pron:'/lou-ki/', category:'slang', generation:'Gen Z / Millennials',
+    tags:['Gen Z','Millennials','2018'], date:'~2018', popularity:79, emoji:'🤫',
+    definition:'Algo que se hace o siente de manera discreta. "Lowkey me gustó" = aunque no lo admitiría públicamente. Su opuesto es "highkey" (abierto, sin vergüenza).',
+    example:'"Lowkey me gustó la película aunque dije que era malísima."',
+    example2:'"Lowkey envidio su vida, no lo voy a decir en voz alta pero es verdad."',
+    example3:'"¿Quieres ir?" "Lowkey sí, pero no quiero parecer muy emocionada."',
+    synonyms:['En secreto','Discretamente','Un poco'], related:['no-cap','delulu'],
+    platforms:['Instagram','X'], formalTranslation:'De manera discreta o sin querer reconocerlo públicamente'
+  },
+  {
+    id:'main-character', word:'Main character', pron:'/méin-ká-rak-ter/', category:'tiktok', generation:'Gen Z',
+    tags:['Gen Z','2021','TikTok'], date:'~2021', popularity:87, emoji:'🎬',
+    definition:'Sentirte el protagonista de tu propia película. Todo gira en torno a ti. Puede ser aspiracional ("hoy es mi día de main character") o irónico.',
+    example:'"Hoy me levanté con energía de main character: café en mano, look perfecto, todo salió bien."',
+    example2:'"Se peleó con el profe por no tener razón. Main character que no da vergüenza ajena."',
+    example3:'"Estoy viviendo mi era de main character: todo lo que toco sale bien esta semana."',
+    synonyms:['Protagonista','Centro del universo'], related:['pov','delulu'],
+    platforms:['TikTok','Instagram'], formalTranslation:'Sentirse protagonista central de la propia historia de vida'
+  },
+  {
+    id:'ratio', word:'Ratio', pron:'/réi-shio/', category:'twitter', generation:'Millennials / Gen Z',
+    tags:['Millennials','Gen Z','2017'], date:'~2017', popularity:73, emoji:'📊',
+    definition:'En X/Twitter: cuando una respuesta tiene más likes que el tweet original. Si te "ratean", tu opinión fue rechazada masivamente. Forma de medir desacuerdo en internet.',
+    example:'"Lo ratearon con 80K likes en la respuesta versus 300 en su tweet. Definitivo."',
+    example2:'"Dijo algo controvertial y en 2 horas tenía ratio de 50 a 1. Se fue silenciado."',
+    example3:'"¿Borró el tweet?" "Sí, lo ratearon tan fuerte que no le quedó otra."',
+    synonyms:['Vapuleado','Aplastado'], related:['cringe','mid'],
+    platforms:['X/Twitter'], formalTranslation:'Recibir más respuestas críticas que apoyo en una publicación digital'
+  },
+  {
+    id:'bussin', word:"Bussin'", pron:'/bá-sin/', category:'slang', generation:'Gen Z',
+    tags:['Gen Z','2021'], date:'~2021', popularity:82, emoji:'🍕',
+    definition:'Algo increíblemente bueno, especialmente comida. Viene del slang afroamericano. Si está "bussin", es el mayor elogio posible.',
+    example:'"Probé ese nuevo local de ramen y estaba absolutamente bussin\'."',
+    example2:'"La abuela hizo sus empanadas. Bussin\' como siempre, nadie las supera."',
+    example3:'"¿Cómo estuvo la comida?" "Bussin\' fr fr, volví dos veces en el mismo día."',
+    synonyms:['Buenísimo','Riquísimo','Está fire'], related:['fire','no-cap'],
+    platforms:['TikTok'], formalTranslation:'Algo de excelente calidad, especialmente referido a la comida'
+  },
+
+  /* ═══ MILLENNIALS (1981-1996) ═══ */
+  {
+    id:'yolo', word:'YOLO', pron:'/yó-lo/', category:'slang', generation:'Millennials',
+    tags:['Millennials','2011','Viral'], date:'~2011', popularity:60, emoji:'🎉',
+    definition:'"You Only Live Once". El lema generacional de los Millennials. Justificaba decisiones impulsivas. Popularizado por Drake en 2011. Hoy se usa con ironía nostálgica.',
+    example:'"Gasté todos mis ahorros en el viaje a Europa. YOLO, ya ahorraré después."',
+    example2:'"YOLO decía a los 23. Ahora a los 35 pago las consecuencias de ese YOLO."',
+    example3:'"¿Por qué sacaste un crédito para ese viaje?" "Era el 2013. YOLO. No preguntes más."',
+    synonyms:['Solo se vive una vez','Carpe diem'], related:['fomo','adulting'],
+    platforms:['Instagram','Twitter','Vine'], formalTranslation:'Solo se vive una vez, hay que aprovechar cada momento'
+  },
+  {
+    id:'fomo', word:'FOMO', pron:'/fó-mo/', category:'slang', generation:'Millennials / Gen Z',
+    tags:['Millennials','Gen Z','2013'], date:'~2013', popularity:78, emoji:'😰',
+    definition:'"Fear Of Missing Out". Ansiedad de sentir que todos están en algo divertido menos tú. Las redes sociales lo intensificaron. Hoy existe "JOMO" (Joy of Missing Out) como su antídoto Millennial.',
+    example:'"Tenía FOMO de no ir a la fiesta pero al final dicen que estuvo aburrida."',
+    example2:'"El FOMO me arruinó dos años. Iba a todo aunque no quisiera. Ya no más."',
+    example3:'"¿Fuiste?" "No, y cero FOMO. Finalmente aprendí a quedarme en casa sin culpa."',
+    synonyms:['Miedo a perderse algo','Ansiedad social'], related:['yolo','jomo'],
+    platforms:['Instagram','WhatsApp'], formalTranslation:'Ansiedad por la posibilidad de perderse experiencias sociales importantes'
+  },
+  {
+    id:'adulting', word:'Adulting', pron:'/á-dul-ting/', category:'slang', generation:'Millennials',
+    tags:['Millennials','2015'], date:'~2015', popularity:65, emoji:'🧾',
+    definition:'Hacer cosas de adulto: pagar cuentas, cocinar, ir al médico. Los Millennials convirtieron la vida adulta en un verbo con humor y resignación.',
+    example:'"Pasé todo el sábado haciendo adulting: banco, supermercado, lavandería."',
+    example2:'"Adulting hit different cuando tienes que llamar al médico tú mismo y no manda tu mamá."',
+    example3:'"Compré un aceite de oliva caro porque era bueno para la salud. Adulting nivel avanzado."',
+    synonyms:['Responsabilidades adultas','Ser grande'], related:['burnout','quiet-quitting'],
+    platforms:['Twitter','Instagram'], formalTranslation:'Cumplir con responsabilidades propias de la vida adulta'
+  },
+  {
+    id:'stan', word:'Stan', pron:'/stan/', category:'slang', generation:'Millennials / Gen Z',
+    tags:['Millennials','Gen Z','2000','Eminem'], date:'~2000, viral 2016', popularity:80, emoji:'🎤',
+    definition:'Fan extremo y devoto de alguien o algo. Viene de la canción "Stan" de Eminem (2000). Se usa como sustantivo ("soy stan de Taylor") o verbo ("stannear"). También puede ser un poco obsesivo.',
+    example:'"Llevo 10 años siendo stan de Beyoncé. Conozco cada nota de cada álbum."',
+    example2:'"Stanneo a ese escritor desde los 15 años. Leí todos sus libros 3 veces."',
+    example3:'"El fandom de esa banda tiene stans de todos los países. Es una comunidad entera."',
+    synonyms:['Fan acérrimo','Fanático devoto'], related:['fandom','parasocial'],
+    platforms:['Twitter','Instagram','TikTok'], formalTranslation:'Seguidor extremadamente devoto de un artista o figura pública'
+  },
+  {
+    id:'quiet-quitting', word:'Quiet quitting', pron:'/kuáiet-kíting/', category:'trabajo', generation:'Millennials / Gen Z',
+    tags:['Millennials','Gen Z','Trabajo','2022'], date:'~2022', popularity:82, emoji:'💼',
+    definition:'No renunciar, sino hacer exactamente lo que pide el contrato: nada más, nada menos. Sin horas extra, sin correos de noche. La respuesta a la hustle culture.',
+    example:'"Empecé el quiet quitting: a las 6pm apago el computador. Cambió mi vida."',
+    example2:'"Mi jefe me pidió que llegara temprano sin pago extra. Quiet quitting activado."',
+    example3:'"¿Qué es el quiet quitting?" "Hacer tu trabajo bien pero no ser esclavo de él."',
+    synonyms:['Desconexión laboral','Hacer lo mínimo acordado'], related:['burnout','adulting'],
+    platforms:['LinkedIn','TikTok','Reddit'], formalTranslation:'Cumplir estrictamente con las obligaciones laborales sin exceder las expectativas'
+  },
+  {
+    id:'burnout', word:'Burnout', pron:'/bérn-aut/', category:'trabajo', generation:'Millennials / Gen X',
+    tags:['Millennials','Gen X','Trabajo','2019'], date:'OMS 2019', popularity:85, emoji:'🔥',
+    definition:'Agotamiento crónico por trabajo excesivo. La OMS lo reconoció como síndrome en 2019. Los Millennials fueron la primera generación en nombrarlo masivamente.',
+    example:'"Llegué al burnout total: no podía abrir el computador sin sentir pánico."',
+    example2:'"Tres años sin vacaciones reales. El burnout llegó de golpe y no pude trabajar por meses."',
+    example3:'"¿Cómo sabes que tienes burnout?" "Cuando lo que antes amabas ahora te da ansiedad."',
+    synonyms:['Agotamiento laboral','Desgaste profesional'], related:['quiet-quitting','hustle-culture'],
+    platforms:['LinkedIn','Twitter','Reddit'], formalTranslation:'Síndrome de agotamiento crónico producido por el estrés laboral sostenido'
+  },
+  {
+    id:'basic', word:'Basic', pron:'/béi-sik/', category:'slang', generation:'Millennials / Gen Z',
+    tags:['Millennials','Gen Z','2013'], date:'~2013', popularity:62, emoji:'☕',
+    definition:'Alguien que sigue tendencias mainstream sin cuestionarlas. Surgió como crítica, hoy se usa con humor propio. "Ser basic" ya no es insulto para muchos.',
+    example:'"Soy la persona más basic del mundo: Pumpkin Spice Latte, velas y Taylor Swift en otoño."',
+    example2:'"¿Me juzgas por ser basic?" "No, lo básico existe por algo. Si está bueno, está bueno."',
+    example3:'"Toda mi decoración viene de IKEA y Zara Home. Básica y orgullosa."',
+    synonyms:['Convencional','Mainstream'], related:['cringe','mid'],
+    platforms:['Twitter','Instagram'], formalTranslation:'Persona que sigue tendencias populares de forma predecible sin originalidad'
+  },
+
+  /* ═══ GEN X / BOOMERS ═══ */
+  {
+    id:'ok-boomer', word:'OK Boomer', pron:'/ok-bú-mer/', category:'slang', generation:'Gen Z / Millennials → Boomers',
+    tags:['Gen Z','Millennials','2019','Viral'], date:'~2019', popularity:70, emoji:'🙄',
+    definition:'Respuesta sarcástica a opiniones percibidas como anticuadas o desconectadas de la realidad actual. Definió el conflicto generacional de su época. Hoy se usa con ironía.',
+    example:'"Me dijo que solo hay que trabajar más duro para comprar una casa. OK Boomer."',
+    example2:'"OK Boomer lo usan ahora también con Millennials nostálgicos. El círculo se cierra."',
+    example3:'"Se lo dije a mi papá y casi nos peleamos. Aprendí a no usarlo en familia."',
+    synonyms:['Lo que digas (con ironía)'], related:['cringe','adulting'],
+    platforms:['TikTok','Twitter'], formalTranslation:'Respuesta irónica que desestima una opinión percibida como anticuada'
+  },
+  {
+    id:'fake-news', word:'Fake news', pron:'/féik-niuz/', category:'ia', generation:'Boomers / Gen X',
+    tags:['Boomers','Gen X','2016','Vigente 2026'], date:'~2016', popularity:80, emoji:'📰',
+    definition:'Noticias falsas presentadas como reales. Explotó en 2016. En 2026, la IA generativa multiplicó el problema: hay artículos generados por IA y deepfakes que parecen noticias reales.',
+    example:'"Mi abuela me mandó una noticia falsa que fue desmentida hace 2 años."',
+    example2:'"Antes costaba más hacer fake news. Con IA ahora cualquiera puede en minutos."',
+    example3:'"¿Cómo sabes que es fake news?" "Busca la fuente original. Si no existe, es falso."',
+    synonyms:['Desinformación','Noticia falsa','Bulo'], related:['deepfake','infoxicacion'],
+    platforms:['WhatsApp','Facebook','X'], formalTranslation:'Noticias falsas o desinformación presentada con apariencia de veracidad'
+  },
+  {
+    id:'infoxicacion', word:'Infoxicación', pron:'/in-fok-si-ka-ción/', category:'ia', generation:'Boomers / Gen X',
+    tags:['Boomers','Gen X','IA','2020'], date:'~2020, vigente 2026', popularity:68, emoji:'📱',
+    definition:'Saturación cognitiva por exceso de información digital. Notificaciones, cadenas de WhatsApp, noticias. Muy relevante para personas que adoptaron la tecnología de adultos.',
+    example:'"Mi papá tiene infoxicación: le llegan 200 mensajes de WhatsApp al día y no sabe cuáles son reales."',
+    example2:'"Tengo infoxicación crónica. 15 notificaciones antes de levantarme de la cama."',
+    example3:'"La infoxicación genera parálisis: tanta información que no se puede decidir nada."',
+    synonyms:['Saturación informativa','Sobrecarga digital'], related:['fake-news','doom-scrolling'],
+    platforms:['WhatsApp','Facebook','Correo'], formalTranslation:'Saturación cognitiva producida por exceso de información digital'
+  },
+  {
+    id:'doom-scrolling', word:'Doomscrolling', pron:'/dum-skró-ling/', category:'slang', generation:'Millennials / Gen X / Boomers',
+    tags:['Millennials','Gen X','2020'], date:'~2020', popularity:76, emoji:'😰',
+    definition:'Seguir consumiendo noticias negativas aunque generen ansiedad. Durante la pandemia explotó. En 2026 es hábito documentado que afecta la salud mental de todas las generaciones.',
+    example:'"Me quedé haciendo doomscrolling hasta las 2am leyendo noticias malas. Amanecí con ansiedad."',
+    example2:'"El doomscrolling es adictivo porque el cerebro busca información de amenazas. Mecanismo de supervivencia."',
+    example3:'"Borré las apps de noticias del celular. El doomscrolling me estaba enfermando."',
+    synonyms:['Consumo compulsivo de noticias'], related:['fake-news','infoxicacion','digital-detox'],
+    platforms:['X','Instagram','News apps'], formalTranslation:'Consumo compulsivo de contenido negativo a pesar del malestar que genera'
+  },
+  {
+    id:'digital-detox', word:'Digital detox', pron:'/dí-ji-tal-dí-toks/', category:'slang', generation:'Gen X / Millennials',
+    tags:['Gen X','Millennials','Boomers','2015'], date:'~2015', popularity:70, emoji:'🌿',
+    definition:'Período deliberado de desconexión de dispositivos digitales. Puede ser un fin de semana, vacaciones o horas al día. Respuesta a la adicción tecnológica.',
+    example:'"Me hice un digital detox de 10 días en el campo. Volví siendo otra persona."',
+    example2:'"Digital detox de fin de semana: celular en el cajón viernes a las 7pm hasta el domingo."',
+    example3:'"Mis hijos necesitan un digital detox. Tres horas de pantalla al día es suficiente."',
+    synonyms:['Desconexión digital','Pausa tecnológica'], related:['burnout','doomscrolling'],
+    platforms:['Todas'], formalTranslation:'Período de desconexión voluntaria de dispositivos y plataformas digitales'
+  },
+  {
+    id:'deepfake', word:'Deepfake', pron:'/díp-féik/', category:'ia', generation:'Todas las generaciones',
+    tags:['IA','2019','Crisis 2026'], date:'~2019, crítico 2026', popularity:88, emoji:'🎭',
+    definition:'Video o audio falso generado por IA que hace parecer que alguien dijo o hizo algo que nunca ocurrió. En 2026 es la crisis de desinformación más grave. Afecta política y vida cotidiana.',
+    example:'"Circuló un deepfake del presidente diciendo cosas que nunca dijo. Millones lo creyeron."',
+    example2:'"¿Ese video es real?" "No sé. En 2026 ya no se puede saber sin verificar."',
+    example3:'"Hicieron un deepfake de mi artista favorito diciendo cosas horribles. Es espantoso."',
+    synonyms:['Video falso con IA','Imagen artificial'], related:['fake-news','ia-generativa'],
+    platforms:['TikTok','YouTube','X'], formalTranslation:'Contenido audiovisual manipulado mediante IA para suplantar identidades'
+  },
+  {
+    id:'ia-generativa', word:'IA generativa', pron:'/i-a-je-ne-ra-tí-va/', category:'ia', generation:'Todas las generaciones',
+    tags:['IA','2023','Masivo 2026'], date:'~2023, masivo 2026', popularity:95, emoji:'🤖',
+    definition:'IA capaz de crear texto, imágenes, audio y video originales. ChatGPT, Claude, Gemini, DALL-E son ejemplos. En 2026 está en casi todas las aplicaciones del día a día.',
+    example:'"Usé IA generativa para escribir el correo difícil que no podía redactar. Quedó perfecto."',
+    example2:'"Toda la oficina usa IA generativa ahora. Quien no la usa está quedando atrás."',
+    example3:'"Mi mamá descubrió la IA generativa y me manda imágenes Ghibli de la familia todos los días."',
+    synonyms:['IA creativa','ChatGPT','Claude'], related:['deepfake','fake-news'],
+    platforms:['Web','Apps','WhatsApp'], formalTranslation:'Inteligencia artificial capaz de producir contenido original de texto, imagen o audio'
+  },
+  {
+    id:'hustle-culture', word:'Hustle culture', pron:'/há-sel-kál-cher/', category:'trabajo', generation:'Gen X / Millennials',
+    tags:['Gen X','Millennials','Trabajo','2015'], date:'~2015', popularity:72, emoji:'💪',
+    definition:'Cultura que glorifica el trabajo extremo como virtud. "Trabaja duro, duerme cuando mueras." Gen X la vivió en los 90s. Millennials la adoptaron y luego la criticaron. Hoy está siendo reemplazada.',
+    example:'"La hustle culture me quemó: 80 horas semanales durante 5 años y llegué al burnout."',
+    example2:'"Glorificar no dormir es la hustle culture más tóxica. El descanso también es productividad."',
+    example3:'"De la hustle culture pasé al quiet quitting. Fue un viaje largo pero necesario."',
+    synonyms:['Cultura del esfuerzo extremo','Workaholismo'], related:['burnout','quiet-quitting'],
+    platforms:['LinkedIn','Twitter'], formalTranslation:'Cultura que glorifica el trabajo extremo y el sacrificio personal como virtud'
+  },
+  {
+    id:'parasocial', word:'Relación parasocial', pron:'/pa-ra-só-cial/', category:'slang', generation:'Gen Z / Millennials',
+    tags:['Gen Z','Millennials','2021'], date:'~2021', popularity:72, emoji:'💭',
+    definition:'Apego emocional unilateral con una figura pública que no sabe que existes. Sientes que "conoces" a alguien famoso como si fuera tu amigo real.',
+    example:'"Tengo una relación parasocial con ese streamer. Llevo 3 años viéndolo y siento que es mi amigo."',
+    example2:'"La relación parasocial con actores de series es muy común. Les deseas el bien de verdad."',
+    example3:'"Lloraste cuando se separaron?" "Era una relación parasocial muy intensa, no lo puedo evitar."',
+    synonyms:['Apego unilateral','Falsa amistad con famosos'], related:['stan','rent-free'],
+    platforms:['Twitch','YouTube','TikTok'], formalTranslation:'Vínculo emocional unilateral con una figura pública sin reciprocidad real'
+  },
+  {
+    id:'phubbing', word:'Phubbing', pron:'/fá-bing/', category:'slang', generation:'Gen X / Millennials',
+    tags:['Gen X','Millennials','2013'], date:'~2013', popularity:65, emoji:'📱',
+    definition:'Ignorar a alguien físicamente presente para mirar el celular. "Phone" + "snubbing". Genera conflictos intergeneracionales reales en cenas familiares.',
+    example:'"Mi hijo me hace phubbing en cada cena. Le hablo y sigue mirando el teléfono."',
+    example2:'"¿Phubbing en una primera cita? Es automáticamente la última cita."',
+    example3:'"Toda la mesa en el celular. Phubbing colectivo. Nadie habló con nadie."',
+    synonyms:['Ignorar por el celular'], related:['digital-detox','brainrot'],
+    platforms:['Vida real'], formalTranslation:'Ignorar a una persona presente para prestar atención al teléfono móvil'
+  },
+
+];
+
+/* ──────────────────────────────────────────────────────
+   CATEGORÍAS
+   ────────────────────────────────────────────────────── */
+const CATEGORIES = [
+  { id:'all',      label:'Todos',           emoji:'🌐' },
+  { id:'tiktok',   label:'TikTok',          emoji:'🎵' },
+  { id:'gaming',   label:'Gaming',          emoji:'🎮' },
+  { id:'memes',    label:'Memes / Cultura', emoji:'😂' },
+  { id:'slang',    label:'Slang',           emoji:'💬' },
+  { id:'twitter',  label:'X / Twitter',     emoji:'🐦' },
+  { id:'ia',       label:'IA y tecnología', emoji:'🤖' },
+  { id:'trabajo',  label:'Trabajo',         emoji:'💼' },
+];
+
+/* ──────────────────────────────────────────────────────
+   TRENDING — Julio 2026 (multi-gen)
+   ────────────────────────────────────────────────────── */
+const TRENDING_TODAY = [
+  { word:'Aura farming',   searches:7820, trend:'+52%', gen:'Gen Alpha/Z' },
+  { word:'The ick',        searches:6540, trend:'+61%', gen:'Gen Z' },
+  { word:'IA generativa',  searches:6210, trend:'+88%', gen:'Todas' },
+  { word:'Deepfake',       searches:5890, trend:'+73%', gen:'Todas' },
+  { word:'Quiet quitting', searches:4970, trend:'+29%', gen:'Millennials/GenZ' },
+  { word:'Doomscrolling',  searches:4320, trend:'+44%', gen:'Todas' },
+  { word:'Burnout',        searches:3980, trend:'+33%', gen:'Millennials/GenX' },
+  { word:'Parasocial',     searches:3540, trend:'+37%', gen:'Gen Z/Millennials' },
+];
+
+/* ──────────────────────────────────────────────────────
+   MEMES — 18 entradas multi-gen
+   ────────────────────────────────────────────────────── */
+const MEMES_DATA = [
+  /* 2026 VIRALES */
+  { id:'aura-farm', cat:'2026', gen:'Gen Alpha', emoji:'✨',
+    name:'Aura Farming',
+    origin:'TikTok, viral desde julio 2025',
+    def:'El meme más activo de 2025-2026. Se filman o narran momentos del día con puntajes de "aura" ganada o perdida. La comunidad decide cuántos puntos merece cada acción.',
+    how:'"Me tropecé en el metro: -800 aura." "Le ayudé a la señora: +1500 aura." "Llegué con café y look impecable: +5000 aura pura."',
+    examples:['"Contesté mal en clase delante de todos: -2000 aura instantánea."','"Llegué primero a la reunión con la presentación lista: farming de aura seria."','"Me caí por las escaleras del colegio. Aura en cero. Reconstrucción total."'],
+    date:'Julio 2025 – presente', plat:'TikTok, Instagram, X', vigencia:'high', vigLabel:'🔥 Viral 2026' },
+
+  { id:'the-ick-meme', cat:'2026', gen:'Gen Z', emoji:'🤢',
+    name:'The Ick',
+    origin:'Slang amoroso inglés, boom en español 2025-2026',
+    def:'Ese momento exacto donde algo que hace alguien que te gusta genera repulsión inmediata e irreversible. Sin cura. Los videos de "cosas que me dan el ick" son de los más virales.',
+    how:'"Correr raro → the ick." "Hablar con el mozo por mí → the ick." "Decir \'bacán\' → the ick supremo."',
+    examples:['"Vino a buscarme en bicicleta. No sé por qué pero fue the ick inmediato."','"The ick más raro: hacía el ruido del yogur al terminarlo. Adiós para siempre."','"Me dio the ick cuando tomó la sopa del plato. Nunca más."'],
+    date:'2025-2026', plat:'TikTok, Instagram', vigencia:'high', vigLabel:'🔥 Viral 2026' },
+
+  { id:'ghibli-ai', cat:'ia', gen:'Todas las generaciones', emoji:'🎨',
+    name:'Arte IA estilo Ghibli',
+    origin:'ChatGPT DALL-E actualización, abril 2025',
+    def:'Convertir fotos reales en ilustraciones al estilo Studio Ghibli usando IA. Generó debate global sobre derechos de autor. En 2026 hay variantes: Pixar, anime, pintura impresionista. Une a todas las generaciones.',
+    how:'Foto + "hazla estilo Ghibli" a cualquier IA de imágenes. Abuelos transforman fotos familiares. Jóvenes transforman selfies. Todas las edades participan.',
+    examples:['"Mi abuela convirtió su foto de boda de 1972 en estilo Ghibli. Lloré."','"El grupo de trabajo entero se hizo fotos estilo Ghibli para el directorio. Aprobado."','"Mi gato en Ghibli es lo más hermoso que ha producido la IA hasta ahora."'],
+    date:'Abril 2025 – presente', plat:'Instagram, TikTok, X', vigencia:'high', vigLabel:'🔥 Vigente 2026' },
+
+  { id:'deepfake-meme', cat:'ia', gen:'Todas las generaciones', emoji:'🎭',
+    name:'Deepfake — "¿Es real?"',
+    origin:'Tecnología ~2019, crisis masiva 2025-2026',
+    def:'Videos y audios falsos generados por IA que parecen completamente reales. En 2026 es la crisis de desinformación más grave. El "meme" es que ya nadie sabe qué creer.',
+    how:'"¿Esto es real o deepfake?" es la pregunta más frecuente en WhatsApp familiar. Detectar deepfakes es la nueva habilidad digital esencial de 2026.',
+    examples:['"Le mandaron a mi mamá un deepfake del banco pidiéndole datos. Casi cae."','"Circuló un deepfake de un político diciendo algo escandaloso. Era falso pero ya nadie lo sabía."','"¿Cómo detecto un deepfake?" "Busca movimientos raros en los ojos y la boca. Y verifica fuente."'],
+    date:'2019 – crisis 2026', plat:'YouTube, TikTok, X, WhatsApp', vigencia:'high', vigLabel:'Crisis 2026' },
+
+  /* GEN ALPHA */
+  { id:'skibidi-meme', cat:'genalpha', gen:'Gen Alpha', emoji:'🚽',
+    name:'Skibidi Toilet',
+    origin:'Canal DaFuq!?Boom! en YouTube, 2023',
+    def:'Serie animada de cabezas en inodoros en guerra contra cámaras humanoides. El lenguaje base de Gen Alpha. En 2026 tiene película en producción y sigue siendo el vocabulario más usado por menores de 14.',
+    how:'"Eso es muy skibidi Ohio." "Ese profe es sigma." "¿Por qué eres tan skibidi?" Los padres en 2026 ya tienen que saber esto para entender a sus hijos.',
+    examples:['"Mi sobrino de 9 años explica Skibidi Toilet y no entiendo ni una palabra."','"En el colegio de mi hijo todo es skibidi esto y skibidi lo otro. Necesitaba ALT 60/40."','"Skibidi se convirtió en adjetivo universal. Eso es impacto cultural real."'],
+    date:'2023 – vigente 2026', plat:'YouTube, TikTok', vigencia:'high', vigLabel:'Vigente 2026' },
+
+  /* GEN Z */
+  { id:'understood-meme', cat:'genz', gen:'Gen Z', emoji:'📋',
+    name:'Understood the assignment',
+    origin:'Slang inglés masificado 2021-2026',
+    def:'Elogio máximo cuando alguien llega exactamente como se esperaba, de forma impecable. Si te lo dicen, lo hiciste perfecto.',
+    how:'"Look para el evento: understood the assignment." "Presentación perfecta: understood the assignment." También: "Claramente NO understood the assignment" para cuando alguien falla estrepitosamente.',
+    examples:['"La decoración de la boda: completely understood the assignment."','"El chef nuevo: understood the assignment en el primer día de trabajo."','"Yo en esa reunión: did NOT understand the assignment para nada."'],
+    date:'2021 – vigente 2026', plat:'TikTok, Instagram, X', vigencia:'high', vigLabel:'Vigente 2026' },
+
+  /* CLÁSICOS */
+  { id:'this-is-fine', cat:'clasico', gen:'Gen X / Millennials', emoji:'🐕',
+    name:'This is Fine 🔥',
+    origin:'Cómic "On Fire" de KC Green, 2013',
+    def:'Perro tomando café mientras todo arde a su alrededor diciendo "this is fine". Aceptación resignada ante el caos. En 2026 es el meme político y laboral más usado.',
+    how:'"This is fine" cuando suben precios. Cuando el proyecto falla a último minuto. Cuando el mundo parece colapsar pero uno sigue con el café.',
+    examples:['"Economía en caída: this is fine ☕"','"Tercer reunión sin sentido del día: this is fine."','"Mi jefe pidió los resultados para ayer: this is fine. Todo bien."'],
+    date:'2013 – vigente siempre', plat:'X, Reddit, LinkedIn, Instagram', vigencia:'high', vigLabel:'Clásico permanente' },
+
+  { id:'pepe', cat:'clasico', gen:'Millennials / Gen Z', emoji:'🐸',
+    name:'Pepe the Frog',
+    origin:'Cómic "Boy\'s Club" de Matt Furie, 2005',
+    def:'El meme más longevo de internet. Existe un Pepe para cada emoción. Es el contenedor visual universal: triste, feliz, nervioso, estoico, orgulloso, devastado.',
+    how:'Como reacción en cualquier plataforma, de cualquier generación. En grupos de WhatsApp de abuelos y nietos por igual. Hay Pepes para literalmente cualquier situación humana posible.',
+    examples:['"Mi abuela manda Pepe triste cuando se cancela el plan familiar. Ya aprendió."','"Pepe feliz es la reacción más honesta que existe en internet."','"En el foro de economía usan Pepe devastado más que cualquier análisis real."'],
+    date:'2005 – vigente siempre', plat:'Reddit, Instagram, X, WhatsApp', vigencia:'high', vigLabel:'Clásico eterno' },
+
+  { id:'woman-yelling', cat:'clasico', gen:'Millennials / Gen X / Boomers', emoji:'🐱',
+    name:'Woman Yelling at Cat',
+    origin:'Dos fotos unidas en Twitter, 2019',
+    def:'Mujer señalando furiosa (Real Housewives) vs. gato blanco sentado calmamente en una mesa. Representa cualquier conflicto donde un lado está furioso y el otro no entiende la situación.',
+    how:'El meme intergeneracional por excelencia en 2026. Boomers, Gen X, Millennials y Gen Z lo usan por igual. Formato estándar para conflictos de opinión de cualquier tipo.',
+    examples:['"Mis padres vs. yo explicando que trabajo desde casa y sí estoy trabajando."','"El cliente vs. el equipo de diseño sobre "solo un pequeño cambio"."','"Yo pidiéndole a mi cerebro que duerma vs. mi cerebro recordando algo vergonzoso de 2015."'],
+    date:'2019 – vigente 2026', plat:'X, Instagram, Facebook', vigencia:'high', vigLabel:'Vigencia alta' },
+
+  { id:'distracted-bf', cat:'clasico', gen:'Millennials / Gen X', emoji:'👀',
+    name:'Distracted Boyfriend',
+    origin:'Stock photo de Antonio Guillem, 2012. Meme viral 2017',
+    def:'Hombre mirando a otra mujer mientras su novia lo mira furiosa. Representa abandonar algo por algo nuevo. El meme más adaptable y universal de internet.',
+    how:'"Yo" mirando a "procrastinar" mientras deja a "mis obligaciones" atrás. En 2026: "Yo" mirando a "IA" mientras deja a "trabajo manual" esperando.',
+    examples:['"Yo mirando TikTok / mi tarea que entrego en 30 minutos."','"Las empresas mirando IA / los trabajadores actuales."','"Yo mirando el postre / mi promesa de comer sano."'],
+    date:'2017 – vigente 2026', plat:'Reddit, Instagram, X', vigencia:'med', vigLabel:'Vigencia media' },
+
+  /* MILLENNIALS */
+  { id:'ok-boomer-meme', cat:'millennial', gen:'Gen Z / Millennials', emoji:'🙄',
+    name:'OK Boomer',
+    origin:'TikTok, noviembre 2019',
+    def:'Respuesta sarcástica a opiniones anticuadas. En 2026 se usa con ironía y también como autocrítica de Millennials nostálgicos. El ciclo generacional completo.',
+    how:'"OK Boomer" al consejo de "solo trabaja más duro". En 2026 también: "OK Millennial" cuando alguien de 35 se pone nostálgico con el MSN o los CD.',
+    examples:['"Me dijo que los jóvenes no quieren trabajar. OK Boomer."','"OK Boomer lo dijo alguien de 25 a alguien de 32. Los tiempos cambian."','"¿Es malo decir OK Boomer?" "Depende del tono. En familia puede costar la cena."'],
+    date:'2019 – irónicamente vigente 2026', plat:'TikTok, Twitter, Instagram', vigencia:'med', vigLabel:'Vigencia media' },
+
+  { id:'yolo-meme', cat:'millennial', gen:'Millennials', emoji:'🎉',
+    name:'YOLO — La nostalgia Millennial',
+    origin:'Drake "The Motto", 2011',
+    def:'"You Only Live Once". El lema que definió la irresponsabilidad aspiracional de los Millennials jóvenes. En 2026 se usa con ironía dolorosa: "YOLO decía y aquí estoy pagando las consecuencias".',
+    how:'Posts nostálgicos de Instagram. "YOLO 2012 vs. adulting 2026." La generación que vivió demasiado rápido reflexionando sobre las decisiones de su juventud.',
+    examples:['"YOLO era mi filosofía de vida. Ahora tengo 34 años y sigo pagando ese crédito."','"Era el 2013, tenía 22 años y mucho YOLO. No me arrepiento pero tampoco recomendaría."','"Mis fotos de 2012 con YOLO en el caption son el contenido más cringe de mi historia."'],
+    date:'2011 – nostalgia vigente 2026', plat:'Instagram, Facebook', vigencia:'low', vigLabel:'Nostalgia' },
+
+  /* BOOMERS / GEN X */
+  { id:'whatsapp-cadenas', cat:'boomer', gen:'Boomers / Gen X', emoji:'📲',
+    name:'Cadenas de WhatsApp',
+    origin:'WhatsApp, desde ~2012. Peak de desinformación 2020-2026',
+    def:'Los mensajes reenviados masivamente con información falsa, noticias exageradas o consejos de salud no verificados. El vector principal de fake news en familias latinoamericanas.',
+    how:'"Si no reenvías esto en 10 minutos..." "El gobierno no quiere que sepas..." "Un médico me dijo..." Son los memes involuntarios más virales entre Boomers y Gen X.',
+    examples:['"Mi mamá me mandó la cadena de que el 5G causa enfermedades. Llevamos 3 años desmintiendo."','"La cadena de WhatsApp de mi tío llega más puntual que las noticias reales."','"¿Cómo le explico a mi papá que eso es falso sin que se enoje?" "ALT 60/40 tiene una guía."'],
+    date:'2012 – muy vigente 2026', plat:'WhatsApp, Facebook', vigencia:'high', vigLabel:'Vigente 2026' },
+
+  { id:'meme-de-los-jovenes', cat:'boomer', gen:'Boomers / Gen X', emoji:'🤷',
+    name:'"No entiendo a los jóvenes"',
+    origin:'Conflicto generacional eterno. Meme desde ~2016',
+    def:'El meme que representa a adultos mayores completamente perdidos ante el lenguaje y cultura de las nuevas generaciones. La razón de existir de ALT 60/40.',
+    how:'"¿Qué es Skibidi?" "¿Por qué dice rizz?" "¿Qué significa no cap?" Son las preguntas que este meme representa. Y para las que ALT 60/40 tiene respuesta.',
+    examples:['"Mi jefe preguntó en la reunión qué significa \'slay\'. El silencio duró 10 segundos."','"Mi abuelo vio un meme de Pepe y preguntó si era una rana de noticias."','"La cara de mi mamá cuando le expliqué qué es el brainrot: confusión total."'],
+    date:'2016 – permanentemente vigente', plat:'Facebook, WhatsApp, Reddit', vigencia:'high', vigLabel:'Vigente siempre' },
+
+  /* EMOJIS */
+  { id:'skull-emoji', cat:'emoji', gen:'Gen Z / Millennials', emoji:'💀',
+    name:'💀 El cráneo',
+    origin:'Emoji resignificado ~2019-2020',
+    def:'"Me muero de risa". El emoji de cráneo ya no representa muerte literal — significa que algo es tan gracioso que "te mató". Confunde a personas que lo interpretan literalmente.',
+    how:'"💀💀💀" después de algo muy gracioso. "Literalmente me mató 💀" = "me reí muchísimo". En contexto serio puede malinterpretarse como amenaza o tristeza.',
+    examples:['"Le conté el chiste a mi abuela y me preguntó si alguien había muerto. Fue un 💀 en el mensaje."','"¿Por qué mandas calaveras?" "Mamá, es que me reí mucho. Es bueno."','"En el trabajo tuve que explicar que el 💀 no era una amenaza sino entusiasmo."'],
+    date:'~2019 – vigente 2026', plat:'WhatsApp, Instagram, TikTok', vigencia:'high', vigLabel:'Vigente 2026' },
+
+  { id:'moai', cat:'emoji', gen:'Gen Z / Millennials', emoji:'🗿',
+    name:'Moai 🗿',
+    origin:'Emoji resignificado ~2020',
+    def:'La estatua de Isla de Pascua como símbolo de indiferencia total. "No me afecta nada y no voy a reaccionar." En 2026 se combina: 🗿💅 (indiferente y elegante), 🗿🔥 (indiferente ante el caos).',
+    how:'"🗿" como respuesta a noticias absurdas. "🗿🗿🗿" para indiferencia extrema. Confunde a personas que no conocen el código.',
+    examples:['"Le mandé 🗿 a mi jefe sin querer. Le tuve que explicar que no era una amenaza."','"Mi abuelo recibió 🗿 y preguntó si era una estatua egipcia."','"🗿💅 es el combo perfecto para el drama que no te afecta."'],
+    date:'~2020 – vigente 2026', plat:'WhatsApp, TikTok, X', vigencia:'med', vigLabel:'Vigencia media' },
+
+  { id:'eyes-emoji', cat:'emoji', gen:'Todas', emoji:'👀',
+    name:'👀 Los ojos',
+    origin:'Emoji resignificado ~2018',
+    def:'Curiosidad, sospecha o "estoy viendo todo". Se usa para indicar que presencias algo interesante, escandaloso o que te incumbe. Contexto-dependiente.',
+    how:'"👀" cuando hay chisme. "👀" cuando algo involucra a alguien presente. "Sigo todo 👀" para indicar que estás atento sin participar activamente.',
+    examples:['"Pusieron 👀 cuando mencioné que había fiesta y no los había invitado."','"Mi mamá me mandó 👀 cuando llegué tarde. Sin palabras, solo ojos."','"El grupo entero 👀 cuando empezó el drama entre los dos compañeros."'],
+    date:'~2018 – vigente 2026', plat:'Todas', vigencia:'high', vigLabel:'Vigente 2026' },
+
+];
+
+/* ──────────────────────────────────────────────────────
+   TENDENCIAS — Julio 2026 (multi-gen)
+   Fusionadas con memes en la misma página
+   ────────────────────────────────────────────────────── */
+const TRENDS_DATA = [
+  /* GEN ALPHA */
+  { gen:'alpha', platform:'tiktok', emoji:'✨', status:'viral',
+    title:'Aura farming — sistema de puntos de carisma',
+    desc:'Filmar o narrar momentos con puntajes de aura ganada o perdida. +500 por llegar con café. -1000 por tropezarse en público.',
+    origin:'TikTok, julio 2025-2026', famous:'Creadores Gen Alpha', why:'Gamifica el carisma diario — infinitamente replicable',
+    full:'Aura farming convierte cada momento del día en un juego de puntos. La comunidad decide cuánto vale cada acción. En julio 2026 sigue siendo el formato más activo en TikTok para menores de 16.',
+    examples:['"Llegué al trabajo con café: +500 aura."','"Me equivoqué de sala en la reunión: -800 aura."','"Le respondí al jefe de forma sigma: +2000 aura instantánea."']
+  },
+  { gen:'alpha', platform:'youtube tiktok', emoji:'🚽', status:'trending',
+    title:'Skibidi Toilet: idioma de Gen Alpha en 2026',
+    desc:'La serie absurda que en 2026 tiene película en producción y sigue siendo el vocabulario nativo de menores de 14.',
+    origin:'Canal DaFuq!?Boom!, 2023', famous:'DaFuq!?Boom!', why:'Lenguaje propio que excluye a adultos',
+    full:'En julio 2026, Skibidi Toilet anunció su primera película. Gen Alpha usa "skibidi" como adjetivo universal, "sigma" como elogio y "Ohio" para todo lo raro. Para los padres: ya es un idioma que hay que aprender.',
+    examples:['"Mi hijo de 10 me habla en skibidi y no entiendo nada."','"Skibidi Ohio es la combinación de palabras más random del año."','"En el colegio dicen skibidi en vez de raro/absurdo."']
+  },
+
+  /* GEN Z */
+  { gen:'genz', platform:'tiktok instagram', emoji:'🤢', status:'viral',
+    title:'The ick — repulsión irreversible en 2026',
+    desc:'El fenómeno de dating más conversado del año. Videos de "cosas que me dan el ick" siguen acumulando millones.',
+    origin:'Slang inglés, explosión latina 2025', famous:'Creadores de dating content', why:'Todo el mundo tiene su historia y quiere contarla',
+    full:'En julio 2026, "the ick" ya tiene cobertura en medios mainstream. Los ejemplos más virales: correr raro, pedir el menú al mozo por ti, masticar con la boca abierta. La conversación más honesta sobre relaciones del año.',
+    examples:['"El ick más viral de junio: llevar cangurera."','"Me dio the ick y no sé cómo explicarlo racionalmente."','"The ick llegó al podcast de psicología. Ya es un fenómeno de salud mental."']
+  },
+  { gen:'genz', platform:'tiktok instagram', emoji:'⭐', status:'trending',
+    title:'"Mi era" como identidad de vida en 2026',
+    desc:'"Estoy en mi era de..." es la frase más usada en redes por Gen Z para hablar de sus etapas.',
+    origin:'Eras de Taylor Swift, adoptado 2023', famous:'Taylor Swift + creadores lifestyle', why:'Convierte cualquier etapa en algo con identidad definida',
+    full:'En 2026, "mi era" está en todas partes. Era de gym, era de paz mental, era villana, era de estudios. Es la forma Gen Z de hablar de sus procesos personales con identidad y sin drama.',
+    examples:['"Estoy en mi era de no contestar mensajes."','"Mi era de madurez emocional duró 3 semanas pero fue épica."','"Oficialmente entré a mi era de dormir temprano. Veremos cuánto dura."']
+  },
+  { gen:'genz', platform:'x tiktok', emoji:'🏠', status:'trending',
+    title:'Rent free: el concepto del año en X',
+    desc:'Cuando algo vive en tu cabeza sin que puedas evitarlo. Canciones, personas, momentos, comentarios.',
+    origin:'Expresión inglesa, boom 2025-2026', famous:'Creadores de X', why:'Describe perfectamente la obsesión involuntaria',
+    full:'"Vive en mi cabeza rent free" se usa para todo: canciones que no salen, personas que no olvidas, momentos vergonzosos de hace 10 años. En deportes: "ese jugador vive rent free en la cabeza del técnico rival."',
+    examples:['"Ese comentario de hace 6 meses: rent free 24/7."','"La canción del verano: rent free en mi cerebro hasta octubre."','"Él no piensa en mí pero yo lo tengo rent free. Clásico delulu."']
+  },
+
+  /* MILLENNIALS */
+  { gen:'millennial', platform:'trabajo linkedin', emoji:'💼', status:'trending',
+    title:'Quiet quitting sigue siendo la política laboral Millennial',
+    desc:'Hacer exactamente lo del contrato, nada más. En 2026 ya no es tendencia — es estándar para millones.',
+    origin:'TikTok 2022, vigente 2026', famous:'Millennial workers worldwide', why:'Respuesta colectiva a años de hustle culture',
+    full:'En julio 2026, el quiet quitting es política de trabajo para millones. Las empresas respondieron con "work-life integration". La batalla entre productividad y bienestar sigue sin ganador claro.',
+    examples:['"6pm: apago el computador. El correo puede esperar."','"Quiet quitting no es flojera. Es salud mental."','"Mi jefe lo llamó quiet quitting. Yo lo llamo respetar mi contrato."']
+  },
+  { gen:'millennial', platform:'youtube instagram', emoji:'😎', status:'trending',
+    title:'JOMO: la alegría de no ir (respuesta al FOMO)',
+    desc:'Millennials de 30+ que encontraron la paz de quedarse en casa sin culpa.',
+    origin:'FOMO ~2013, JOMO aparece 2023-2026', famous:'Millennial content creators de 30+', why:'La madurez emocional generacional expresada como tendencia',
+    full:'"Me quedé en casa con una peli y fue la mejor decisión" acumula millones de likes entre Millennials. JOMO (Joy of Missing Out) es la evolución natural del FOMO. La generación que aprendió que no hay que ir a todo.',
+    examples:['"JOMO hit different a los 32. No fue a la fiesta y durmió 9 horas. Perfecto."','"De FOMO a JOMO en 10 años. Es crecimiento."','"El plan cancelado es el mejor plan del año."']
+  },
+  { gen:'millennial genx', platform:'trabajo', emoji:'🔥', status:'trending',
+    title:'Burnout: la crisis de salud mental generacional en 2026',
+    desc:'Las licencias por salud mental superan históricamente a cualquier otra causa en 2026.',
+    origin:'OMS 2019, crisis 2022-2026', famous:'Millennial workers worldwide', why:'Una generación trabajó 80 horas semanales y pagó el precio',
+    full:'En julio 2026, el burnout es la conversación de salud mental más importante en LinkedIn y medios. Las empresas implementan días de salud mental y semanas de 4 días como respuesta. La generación que le puso nombre al agotamiento.',
+    examples:['"El burnout llegó sin avisar y me dejó 3 meses sin poder trabajar."','"Semana de 4 días redujo el burnout en 65% según el estudio nórdico."','"Burnout no es flojera. Es el resultado de años de hustle culture sin descanso."']
+  },
+
+  /* GEN X / BOOMERS */
+  { gen:'genx boomer', platform:'whatsapp', emoji:'📲', status:'viral',
+    title:'WhatsApp y fake news: el problema #1 de 2026',
+    desc:'Las cadenas de WhatsApp siguen siendo el principal vector de desinformación en familias latinoamericanas.',
+    origin:'WhatsApp + redes sociales, crítico 2020-2026', famous:'Familiares de todas las edades', why:'El vector más difícil de combatir porque viene de gente de confianza',
+    full:'En julio 2026, WhatsApp es el campo de batalla intergeneracional más activo. Padres y abuelos reciben cadenas falsas. Hijos aprenden a desmentirlas con paciencia. ALT 60/40 nació en parte para tender ese puente.',
+    examples:['"Mi papá reenvió que el wifi causa cáncer. Llevamos 4 años con ese."','"La cadena de WhatsApp llega más puntual que las noticias reales."','"¿Cómo le explico que es falso sin que se sienta atacado?"']
+  },
+  { gen:'genx boomer', platform:'youtube', emoji:'📺', status:'trending',
+    title:'YouTube: la nueva TV para Boomers en 2026',
+    desc:'Personas de 55+ adoptan YouTube como fuente principal de entretenimiento e información.',
+    origin:'YouTube 2005, adopción masiva Boomer 2020+', famous:'Canales educativos y de noticias', why:'Sin publicidad intrusiva, contenido infinito y a demanda',
+    full:'En julio 2026, YouTube es la plataforma más activa entre personas de 55+. Tutoriales, documentales, noticias, cocina. El algoritmo aprende rápido sus gustos. Muchos Boomers dicen que YouTube "los mantuvo cuerdos" durante la pandemia.',
+    examples:['"Mi papá de 65 sabe más de YouTube que yo. Tiene 15 canales suscritos."','"Mi suegra aprendió a reparar su lavadora en YouTube."','"YouTube reemplazó la TV para mi generación — me dijo alguien de 62 años."']
+  },
+  { gen:'genx boomer', platform:'ia', emoji:'🤖', status:'trending',
+    title:'IA como asistente para adultos mayores en 2026',
+    desc:'Boomers y Gen X usando ChatGPT para navegar el mundo digital, escribir emails y entender trámites.',
+    origin:'ChatGPT masificación 2023-2026', famous:'OpenAI / Anthropic', why:'La IA simplifica tareas digitales para quienes adoptaron tecnología de adultos',
+    full:'En julio 2026, muchos adultos de 60+ usan IA para escribir correos, entender facturas, traducir formularios o hacer preguntas médicas. La democratización digital más silenciosa del año.',
+    examples:['"Mi mamá de 67 usa ChatGPT para escribir emails a la municipalidad. Lo hace mejor que yo."','"Le enseñé a mi papá a usar IA para sus trámites bancarios. Ya no necesita ayuda."','"La IA le explica el diagnóstico médico en palabras simples. Cambió su relación con los doctores."']
+  },
+
+  /* MULTI-GENERACIONAL / IA */
+  { gen:'all', platform:'ia', emoji:'🎨', status:'trending',
+    title:'Arte IA Ghibli: la tendencia que une generaciones',
+    desc:'Convertir fotos en estilo Ghibli con IA. Único trend donde abuelos, padres e hijos participan igual.',
+    origin:'ChatGPT DALL-E, abril 2025', famous:'OpenAI / Studio Ghibli', why:'Ghibli es amado por todas las generaciones — Une en vez de dividir',
+    full:'En julio 2026, el trend de imágenes Ghibli tiene más de 15 meses de vigencia. Es el único trend donde todas las generaciones participan: abuelos transforman fotos de nietos, jóvenes transforman selfies, familias crean álbumes imaginarios juntos.',
+    examples:['"Mi abuela convirtió su foto de boda en Ghibli. Fue el regalo perfecto."','"Toda la familia en estilo Ghibli: el proyecto más unificador del año."','"Primero fue Ghibli, luego Pixar, luego pintura. La IA artística no para."']
+  },
+  { gen:'all', platform:'ia trabajo', emoji:'💼', status:'viral',
+    title:'IA en el trabajo: la revolución de 2026',
+    desc:'Desde Boomers hasta Gen Alpha: la IA cambió cómo trabaja y estudia el mundo entero.',
+    origin:'ChatGPT 2022, integración masiva 2025-2026', famous:'Microsoft / Google / Anthropic', why:'Imposible no verse afectado — cambia todos los sectores',
+    full:'En julio 2026, la IA está en Word, Gmail, Excel, WhatsApp Business. La gran conversación intergeneracional: ¿la IA nos quita trabajo o nos libera del trabajo aburrido? Cada generación responde distinto.',
+    examples:['"Boomers: la IA hace lo de antes más rápido."','"Millennials: la IA me da tiempo para hacer lo que importa."','"Gen Z: uso IA como copiloto en todo. No entiendo cómo trabajaban sin esto."']
+  },
+  { gen:'all', platform:'ia', emoji:'🎭', status:'viral',
+    title:'Deepfakes: la crisis de verdad de 2026',
+    desc:'Videos falsos tan reales que nadie sabe qué creer. La mayor crisis de desinformación de la historia.',
+    origin:'Tecnología 2019, crisis masiva 2025-2026', famous:'Actores malintencionados + IA accesible', why:'La IA bajó a todos el costo de crear contenido falso convincente',
+    full:'En julio 2026, detectar deepfakes es una habilidad crítica. Hay deepfakes de políticos, artistas y familiares. La pregunta "¿esto es real?" es la más frecuente en WhatsApp familiar. ALT 60/40 enseña a verificar.',
+    examples:['"Vi un video del expresidente diciendo algo escandaloso. Era deepfake. Ya no confío en nada."','"Mi abuela casi da sus datos bancarios a un deepfake de su banco."','"¿Cómo detecto un deepfake?" "Fijate en parpadeos raros, bordes borrosos y busca la fuente original."']
+  },
+  { gen:'millennial genx', platform:'trabajo', emoji:'🌿', status:'trending',
+    title:'Semana de 4 días: de experimento a realidad',
+    desc:'Países y empresas que redujeron la semana laboral a 4 días con los mismos o mejores resultados.',
+    origin:'Experimentos en Islandia, UK, Japón 2022-2026', famous:'Países nórdicos, empresas tech', why:'Los resultados muestran igual o mayor productividad',
+    full:'En julio 2026, la semana de 4 días dejó de ser utopía. Decenas de empresas en Chile y Latinoamérica la implementan. Los resultados: menos burnout, misma productividad. La batalla generacional: Millennials la piden, algunos Boomers la resisten.',
+    examples:['"Trabajo 4 días desde enero. Soy más productivo y más feliz."','"Mi empresa lo piloteó. El viernes libre cambió todo el ambiente."','"El debate: ¿4 días de trabajo o 4 días de presencia? No es lo mismo."']
+  },
+];
+
+/* ──────────────────────────────────────────────────────
+   TRANSLATOR EXAMPLES — 20 ejemplos expandidos
+   ────────────────────────────────────────────────────── */
+const TRANSLATOR_EXAMPLES = [
+  { input:'Qué cringe ese POV, no cap',                 output:'Qué vergonzosa resulta esa situación desde esa perspectiva. Te lo aseguro.' },
+  { input:'Tengo un rizz impresionante hoy',             output:'Hoy tengo un carisma natural especialmente notable.' },
+  { input:'Estoy en mi era delulu ngl',                  output:'Estoy pasando por una etapa de expectativas poco realistas, para ser honesta.' },
+  { input:'Me dio el ick cuando lo vi correr raro',      output:'Sentí una repulsión instantánea e irreversible cuando lo vi correr de forma extraña.' },
+  { input:'Caught in 4K comprando McDonalds con dieta',  output:'Me descubrieron claramente comprando comida rápida mientras supuestamente estaba a dieta.' },
+  { input:'Understood the assignment con ese look',      output:'Llegó vestida exactamente como la ocasión lo requería, de manera impecable.' },
+  { input:'Lives rent free in my head',                  output:'No puedo dejar de pensar en eso sin quererlo — ocupa espacio en mi mente constantemente.' },
+  { input:'Voy a hacer quiet quitting',                  output:'Voy a cumplir estrictamente con mis obligaciones laborales sin exceder el horario ni el contrato.' },
+  { input:'Tengo FOMO de no ir a esa fiesta',            output:'Tengo ansiedad de perderme experiencias importantes que otros están viviendo.' },
+  { input:'Me hice un digital detox completo',           output:'Me desconecté voluntariamente de todos los dispositivos digitales durante un período.' },
+  { input:'Mi papá tiene infoxicación severa',           output:'Mi padre sufre de saturación cognitiva producida por el exceso de información digital.' },
+  { input:'Eso fue un deepfake obvio',                   output:'Ese contenido audiovisual fue claramente generado por IA para suplantar una identidad real.' },
+  { input:'Soy un stan de ese artista',                  output:'Soy un seguidor extremadamente devoto de ese artista.' },
+  { input:'Tengo burnout total',                         output:'Sufro de agotamiento crónico producido por el exceso de trabajo sostenido.' },
+  { input:'Lo ghosteó sin explicación',                  output:'Cesó toda comunicación con ella sin dar ninguna explicación.' },
+  { input:'Qué mid estuvo el concierto',                 output:'El concierto fue completamente mediocre, sin nada destacable.' },
+  { input:'Perdió toda su aura en un segundo',           output:'Perdió completamente su carisma y presencia carismática en un instante.' },
+  { input:'Tengo una relación parasocial con ese streamer', output:'Tengo un apego emocional unilateral con ese creador de contenido que no sabe que existo.' },
+  { input:'El doomscrolling me está destruyendo',        output:'El consumo compulsivo de contenido negativo en redes me está afectando seriamente.' },
+  { input:'Que slay ese look tuyo',                      output:'Ese atuendo tuyo es excepcional y te ves increíble.' },
+];
+
+/* ──────────────────────────────────────────────────────
+   CHAT IA — Preguntas y respuestas predeterminadas
+   (usadas como sugerencias en el chat)
+   ────────────────────────────────────────────────────── */
+const CHAT_QUICK_QUESTIONS = [
+  { q:'¿Qué significa 💀 en redes sociales?',    emoji:'💀' },
+  { q:'¿Por qué todos dicen "literal" últimamente?', emoji:'🗣️' },
+  { q:'¿Qué es el brainrot?',                    emoji:'🧠' },
+  { q:'¿Qué significa "aura" hoy en día?',       emoji:'✨' },
+  { q:'¿Qué es un deepfake y cómo lo detecto?',  emoji:'🎭' },
+  { q:'¿Por qué mi hijo habla de skibidi?',       emoji:'🚽' },
+  { q:'¿Qué significa quiet quitting?',           emoji:'💼' },
+  { q:'¿Qué es el doomscrolling?',               emoji:'📱' },
+  { q:'¿Qué es "the ick"?',                      emoji:'🤢' },
+  { q:'¿Cómo hablo con mi hijo adolescente de redes?', emoji:'👨‍👧' },
+  { q:'¿Qué es una relación parasocial?',        emoji:'💭' },
+  { q:'¿Por qué los jóvenes usan tanto "era"?',  emoji:'⭐' },
+];
+
+window.DICT = {
+  TERMS,
+  CATEGORIES,
+  TRENDING_TODAY,
+  MEMES_DATA,
+  TRENDS_DATA,
+  TRANSLATOR_EXAMPLES,
+  CHAT_QUICK_QUESTIONS,
+};
+
+</script>
+<script>
+/* ═══════════════════════════════════════
+   ALT 60/40 — SHARED UI COMPONENTS
+   ═══════════════════════════════════════ */
+
+function injectNav(currentPage) {
+  const pages = [
+    { href: 'index.html',       label: 'Inicio' },
+    { href: 'diccionario.html', label: 'Diccionario' },
+    { href: 'traductor.html',   label: 'Traductor IA' },
+    { href: 'cultura.html',     label: 'Memes & Tendencias' },
+    { href: 'cursos.html',      label: 'Cursos' },
+    { href: 'nosotros.html',    label: 'Nosotros' },
+  ];
+
+  const links = pages.map(p =>
+    `<a href="${p.href}" class="${p.href === currentPage ? 'current' : ''}">${p.label}</a>`
+  ).join('');
+
+  const drawerLinks = [...pages,
+    { href: 'faq.html',      label: 'FAQ' },
+    { href: 'contacto.html', label: 'Contacto' },
+    { href: 'perfil.html',   label: '👤 Mi perfil' },
+  ].map(p => `<a href="${p.href}">${p.label}</a>`).join('');
+
+  document.getElementById('site-nav-placeholder').innerHTML = `
+  <nav class="site-nav" aria-label="Navegación principal">
+    <a href="index.html" class="logo">ALT <b>60/40</b></a>
+    <div class="navlinks">
+      ${links}
+      <button class="nav-icon-btn" data-dark-toggle aria-label="Modo oscuro">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+      </button>
+      <a href="#" id="navLoginBtn" style="background:rgba(255,255,255,.12);border-radius:8px;padding:8px 14px;font-weight:700;font-size:13px;font-family:var(--fD);color:#fff;text-decoration:none;">Iniciar sesión</a>
+      <button class="nav-avatar-btn" id="navAvatarBtn" style="display:none;" aria-label="Mi perfil"></button>
+      <a href="diccionario.html" class="nav-cta">Empieza</a>
+    </div>
+    <div class="nav-right">
+      <button class="hamburger" id="hamburgerBtn" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-drawer" id="mobileDrawer">${drawerLinks}
+    <div style="margin-top:24px;display:flex;flex-direction:column;gap:12px;">
+      <button onclick="ALT.toggleDarkMode()" style="text-align:left;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">🌙 Modo oscuro</button>
+      <a href="perfil.html" style="display:block;background:var(--gold);color:var(--wine);padding:12px 16px;border-radius:10px;font-weight:700;font-size:14px;text-align:center;text-decoration:none;">👤 Mi perfil</a>
+    </div>
+  </div>`;
+}
+
+function injectFooter() {
+  document.getElementById('site-footer-placeholder').innerHTML = `
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <div class="f-logo">ALT <b>60/40</b></div>
+        <p class="f-desc">Plataforma de cultura digital intergeneracional. Porque la edad no debe ser una barrera para entenderse.</p>
+        <div class="f-social" style="margin-top:16px;">
+          <a href="https://www.instagram.com/alt.60.40/" target="_blank" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+          <a href="https://tiktok.com" target="_blank" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.3 6.3 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.21a8.16 8.16 0 004.77 1.52V7.29a4.85 4.85 0 01-1-.6z"/></svg></a>
+          <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
+          <a href="https://youtube.com" target="_blank" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="white"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.96A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--wine)"/></svg></a>
+        </div>
+      </div>
+      <div><div class="f-col-title">Plataforma</div><ul class="f-links"><li><a href="diccionario.html">Diccionario</a></li><li><a href="traductor.html">Traductor IA</a></li><li><a href="cultura.html">Tendencias</a></li><li><a href="cultura.html">Memes</a></li><li><a href="cursos.html">Cursos</a></li></ul></div>
+      <div><div class="f-col-title">Recursos</div><ul class="f-links"><li><a href="nosotros.html#empresas">Empresas</a></li><li><a href="nosotros.html#colegios">Colegios</a></li><li><a href="nosotros.html#familias">Familias</a></li><li><a href="cursos.html">Precios</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
+      <div><div class="f-col-title">Empresa</div><ul class="f-links"><li><a href="nosotros.html">Nosotros</a></li><li><a href="faq.html">FAQ</a></li><li><a href="nosotros.html#equipo">Equipo</a></li></ul></div>
+      <div><div class="f-col-title">Legal</div><ul class="f-links"><li><a href="privacidad.html">Privacidad</a></li><li><a href="terminos.html">Términos</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 ALT 60/40. Todos los derechos reservados.</p>
+      <div class="footer-bottom-links">
+        <a href="privacidad.html">Privacidad</a>
+        <a href="terminos.html">Términos</a>
+        <a href="contacto.html">Contacto</a>
+      </div>
+    </div>
+  </footer>`;
+}
+
+function injectLoginModal() {
+  document.body.insertAdjacentHTML('beforeend', `
+  <div class="modal-overlay" id="loginModal" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <button class="modal-close" onclick="document.getElementById('loginModal').classList.remove('open')">×</button>
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="font-family:var(--fD);font-size:22px;font-weight:800;color:var(--wine);">ALT <span style="color:var(--gold)">60/40</span></div>
+        <div style="font-size:13px;color:var(--gray);margin-top:6px;">Inicia sesión para guardar favoritos y ver tu progreso</div>
+      </div>
+      <button onclick="ALT.loginWithGoogle();ALT.renderNavAuthState();document.getElementById('loginModal').classList.remove('open');ALT.toast('✅ Bienvenido, '+ALT.state.user.name+'!');" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:13px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;margin-bottom:14px;">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continuar con Google
+      </button>
+      <div style="display:flex;align-items:center;gap:10px;margin:14px 0;"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:11px;color:var(--gray)">o con email</span><div style="flex:1;height:1px;background:var(--border)"></div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <input id="loginName" type="text" placeholder="Tu nombre" style="border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;font-size:14px;font-family:var(--fB);outline:none;color:var(--ink);background:var(--bg);width:100%;">
+        <input id="loginEmail" type="email" placeholder="tu@email.com" style="border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;font-size:14px;font-family:var(--fB);outline:none;color:var(--ink);background:var(--bg);width:100%;">
+        <button onclick="const n=document.getElementById('loginName').value.trim();const e=document.getElementById('loginEmail').value.trim();if(!n||!e){ALT.toast('⚠️ Completa todos los campos');return;}ALT.login(n,e);ALT.renderNavAuthState();document.getElementById('loginModal').classList.remove('open');ALT.toast('✅ Bienvenido, '+n+'!');" style="background:var(--wine);color:#fff;border:none;border-radius:9px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--fD);">Iniciar sesión / Registrarse</button>
+      </div>
+    </div>
+  </div>`);
+  document.getElementById('loginModal').addEventListener('click', e => { if(e.target===document.getElementById('loginModal')) document.getElementById('loginModal').classList.remove('open'); });
+}
+
+function injectA11yWidget() {
+  document.body.insertAdjacentHTML('beforeend', `
+  <button id="a11y-toggle" aria-label="Accesibilidad">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.5"/><path d="M19 8.5h-5.5l-.9-1.5H11l-.9 1.5H4.5v1.5h2.3l1.7 8.5h7l1.7-8.5H19V8.5z"/></svg>
+  </button>
+  <div id="a11y-panel">
+    <div style="font-family:var(--fD);font-size:13px;font-weight:700;color:var(--wine);margin-bottom:12px;">♿ Accesibilidad</div>
+    <div class="a11y-row"><span class="a11y-label">Modo oscuro</span><button class="a11y-toggle-switch ${ALT.state.darkMode?'on':''}" onclick="ALT.toggleDarkMode();this.classList.toggle('on')"></button></div>
+    <div class="a11y-row"><span class="a11y-label">Tamaño de letra</span><div class="a11y-btns"><button class="a11y-mini-btn ${ALT.state.fontSize==='base'?'active':''}" onclick="ALT.setFontSize('base');document.querySelectorAll('#a11y-panel .a11y-mini-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">A</button><button class="a11y-mini-btn ${ALT.state.fontSize==='lg'?'active':''}" style="font-size:14px" onclick="ALT.setFontSize('lg');document.querySelectorAll('#a11y-panel .a11y-mini-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">A</button><button class="a11y-mini-btn ${ALT.state.fontSize==='xl'?'active':''}" style="font-size:16px" onclick="ALT.setFontSize('xl');document.querySelectorAll('#a11y-panel .a11y-mini-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">A</button></div></div>
+    <div class="a11y-row"><span class="a11y-label">Alto contraste</span><button class="a11y-toggle-switch ${ALT.state.highContrast?'on':''}" onclick="ALT.toggleContrast();this.classList.toggle('on')"></button></div>
+    <div class="a11y-row" style="border-bottom:none"><span class="a11y-label">Leer en voz alta</span><div class="a11y-btns"><button class="a11y-mini-btn" onclick="ALT.readPageAloud()">▶</button><button class="a11y-mini-btn" onclick="ALT.stopReading()">■</button></div></div>
+  </div>`);
+}
+
+function setPageMeta({ title, description, path }) {
+  document.title = title + ' — ALT 60/40';
+  let desc = document.querySelector('meta[name="description"]');
+  if (!desc) { desc = document.createElement('meta'); desc.name='description'; document.head.appendChild(desc); }
+  desc.content = description;
+  if (!document.querySelector('link[rel="icon"]')) {
+    const fav = document.createElement('link'); fav.rel='icon';
+    fav.href=`data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23640031'/><text y='.85em' font-size='70' x='8' font-family='sans-serif' fill='%23F7CB15' font-weight='bold'>A</text></svg>`;
+    document.head.appendChild(fav);
+  }
+}
+
+function initPage({ page, title, description }) {
+  setPageMeta({ title, description, path: page });
+  injectNav(page);
+  injectFooter();
+  injectLoginModal();
+  injectA11yWidget();
+  if (!document.getElementById('toast-host')) document.body.insertAdjacentHTML('beforeend','<div id="toast-host"></div>');
+  ALT.init();
+}
+
+</script>
 <script>initPage({page:'nosotros.html',title:'Nosotros',description:'Conoce el equipo y la historia detrás de ALT 60/40, la plataforma de comunicación digital intergeneracional.'});</script>
 </body>
 </html>
